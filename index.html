@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Иван — Roblox-разработчик</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #F2F2F2;
+    --panel: #FFFFFF;
+    --line: #D6D6D6;
+    --text: #1B1B1B;
+    --muted: #5C5C5C;
+    --select: #0078D7;
+    --select-soft: #CCE4F7;
+    --code-bg: #FFFFFF;
+    --kw: #0000FF;
+    --str: #A31515;
+    --com: #008000;
+    --grid: #E4E4E4;
+    --warn: #B35C00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #2E2E2E;
+      --panel: #353535;
+      --line: #4A4A4A;
+      --text: #EDEDED;
+      --muted: #AAAAAA;
+      --select: #00A2FF;
+      --select-soft: #1E4A6B;
+      --code-bg: #262626;
+      --kw: #F86D7C;
+      --str: #ADF195;
+      --com: #666666;
+      --grid: #474747;
+      --warn: #FFA94D;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.55 "Rubik", system-ui, sans-serif;
+  }
+  a { color: var(--select); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--select); outline-offset: 3px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; padding: 72px 0 56px; }
+  h1 { font-size: clamp(44px, 7vw, 76px); line-height: 1; font-weight: 800; margin: 0 0 16px; letter-spacing: -0.02em; }
+  .lead { font-size: 20px; color: var(--muted); max-width: 30em; margin: 0 0 28px; }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn { display: inline-block; padding: 12px 20px; border-radius: 6px; font-weight: 500; text-decoration: none; border: 1px solid var(--line); color: var(--text); background: var(--panel); }
+  .btn.main { background: var(--select); border-color: var(--select); color: #fff; }
+
+  /* Explorer panel */
+  .explorer { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; font-size: 15px; }
+  .explorer-head { padding: 8px 12px; border-bottom: 1px solid var(--line); font-weight: 500; color: var(--muted); }
+  .tree { list-style: none; margin: 0; padding: 6px 0; }
+  .tree button {
+    all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 8px;
+    width: 100%; padding: 4px 12px; cursor: pointer; font-family: "JetBrains Mono", monospace; font-size: 14px;
+  }
+  .tree button:hover { background: var(--select-soft); }
+  .tree button.on { background: var(--select); color: #fff; }
+  .tree .d1 { padding-left: 32px; } .tree .d2 { padding-left: 52px; }
+  .others { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 32px; }
+  .others h3 { font-size: 19px; }
+  .others p { margin: 0 0 6px; color: var(--muted); }
+  .ico { width: 14px; height: 14px; border-radius: 2px; flex: none; }
+  .i-model { background: #8AB4F8; } .i-script { background: #9BCB6C; } .i-module { background: #C89BF2; } .i-folder { background: #E8C46A; }
+
+  /* Sections */
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 34px; margin: 0 0 28px; font-weight: 700; }
+  h3 { font-size: 24px; margin: 0 0 6px; }
+  .proj { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 48px; }
+  .shot {
+    aspect-ratio: 16/10; background: var(--panel); border: 1px dashed var(--line); border-radius: 4px;
+    display: grid; place-items: center; color: var(--muted); text-align: center; padding: 16px;
+  }
+  .shot { position: relative; overflow: hidden; }
+  .shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .lang { position: absolute; top: 16px; right: 24px; font-size: 15px; font-weight: 500; }
+  .wrap { position: relative; }
+  .status { color: var(--muted); margin: 0 0 14px; }
+  .proj ul { padding-left: 20px; margin: 0 0 16px; }
+  .proj li { margin-bottom: 6px; }
+  .stack { color: var(--muted); font-size: 15px; }
+
+
+  /* Properties panel */
+  .side { display: grid; gap: 12px; }
+  .props { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; }
+  .props dl { margin: 0; display: grid; grid-template-columns: 40% 1fr; }
+  .props dt, .props dd {
+    margin: 0; padding: 5px 12px; border-bottom: 1px solid var(--line);
+    font: 13px/1.5 "JetBrains Mono", monospace; min-width: 0; overflow-wrap: anywhere;
+  }
+  .props dt { color: var(--muted); border-right: 1px solid var(--line); }
+  .props dl > :nth-last-child(-n+2) { border-bottom: 0; }
+  .check { display: inline-block; width: 13px; height: 13px; border-radius: 2px; background: var(--select); position: relative; vertical-align: -2px; margin-right: 6px; }
+  .check::after { content: ""; position: absolute; left: 4px; top: 1px; width: 3px; height: 7px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+
+  /* Baseplate placeholder */
+  .shot {
+    border-style: solid;
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px; background-position: -1px -1px;
+  }
+
+  /* Output window */
+  .output { margin-top: 12px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px; }
+  .log { list-style: none; margin: 0; padding: 10px 16px; min-height: 7.5em; font: 13px/1.7 "JetBrains Mono", monospace; overflow-x: auto; }
+  .log li { white-space: nowrap; }
+  .log .ts, .log .src { color: var(--muted); }
+  .log .warn { color: var(--warn); }
+
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px;
+    padding: 20px; overflow-x: auto; font: 14px/1.6 "JetBrains Mono", monospace; margin: 0;
+  }
+  .kw { color: var(--kw); } .str { color: var(--str); } .com { color: var(--com); }
+
+  .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .skills h3 { font-size: 18px; }
+  .skills p { margin: 0; color: var(--muted); }
+
+  .job { margin-bottom: 28px; max-width: 46em; }
+  .job .when { color: var(--muted); font-size: 15px; }
+  .job p { margin: 6px 0 0; }
+
+  h2.sub { margin-top: 48px; }
+  footer { padding: 56px 0 72px; border-top: 1px solid var(--line); }
+
+  @media (max-width: 800px) {
+    .hero, .proj { grid-template-columns: 1fr; }
+    .hero { padding-top: 40px; gap: 32px; }
+    .skills, .others { grid-template-columns: 1fr; }
+    .tree button { padding-top: 8px; padding-bottom: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="lang" href="en/" hreflang="en">English</a>
+
+  <header class="hero">
+    <div>
+      <h1>Иван</h1>
+      <p class="lead">Roblox-разработчик. Пишу на Luau игровые системы: раунды, сохранения, сетевое взаимодействие. Делаю свои игры и учу детей делать свои.</p>
+      <div class="btns">
+        <!-- ЗАМЕНИ ссылки на свои -->
+        <a class="btn main" href="https://t.me/dj32j32j">Написать в Telegram</a>
+        <a class="btn" href="https://www.roblox.com/users/6083151448/profile">Профиль Roblox</a>
+        <a class="btn" href="https://github.com/ivan3232j">GitHub</a>
+      </div>
+    </div>
+
+    <!-- Панель в стиле Explorer из Roblox Studio: клик ведёт к разделу -->
+    <div class="side">
+    <nav class="explorer" aria-label="Навигация по сайту">
+      <div class="explorer-head">Explorer</div>
+      <ul class="tree">
+        <li><button data-go="projects"><span class="ico i-folder"></span>Workspace</button></li>
+        <li><button class="d1" data-go="space"><span class="ico i-model"></span>LastStation</button></li>
+        <li><button class="d2" data-go="code"><span class="ico i-module"></span>RoundManager</button></li>
+        <li><button class="d2" data-go="space"><span class="ico i-module"></span>GameConfig</button></li>
+        <li><button class="d1" data-go="spiky"><span class="ico i-model"></span>SpikyPals</button></li>
+        <li><button class="d1" data-go="course"><span class="ico i-model"></span>Courses</button></li>
+        <li><button class="d1" data-go="other"><span class="ico i-model"></span>OtherProjects</button></li>
+        <li><button data-go="skills"><span class="ico i-folder"></span>Skills</button></li>
+        <li><button data-go="exp"><span class="ico i-folder"></span>Experience</button></li>
+        <li><button data-go="contacts"><span class="ico i-script"></span>Contacts</button></li>
+      </ul>
+    </nav>
+    <div class="props">
+      <div class="explorer-head" id="props-head">Properties</div>
+      <dl id="props"></dl>
+    </div>
+    </div>
+  </header>
+
+  <section id="projects">
+    <h2>Проекты</h2>
+
+    <article class="proj" id="space">
+      <div class="shot">Сюда гифка геймплея<img src="img/space.gif" alt="Геймплей Last Station: Space Miners" loading="lazy" onerror="this.remove()"></div>
+      <div>
+        <h3>Last Station: Space Miners</h3>
+        <p class="status">Опубликована на Roblox. Командный выживач: игроки вместе поддерживают умирающую космическую станцию и добывают ресурсы. Ниже то, что я сделал сам.</p>
+        <ul>
+          <li>Раунды на машине состояний (RoundManager)</li>
+          <li>Все настройки игры в одном модуле GameConfig</li>
+          <li>Системы опасностей и ресурсов с понятным жизненным циклом</li>
+          <li>Данные игрока разделены на забег и долгий прогресс (RunState и MetaProfile)</li>
+          <li>Убрал устаревшие API и собрал RemoteEvents в одном месте</li>
+        </ul>
+        <p class="stack">Luau, DataStore, RemoteEvents, ModuleScripts</p>
+        <p><a href="https://www.roblox.com/games/113738775535567/Last-Station-Space-Miners">Играть на Roblox</a></p>
+      </div>
+    </article>
+
+    <article class="proj" id="spiky">
+      <div class="shot">Сюда скриншот или гифка<img src="img/spiky.gif" alt="Spiky Pals: питомец в доме" loading="lazy" onerror="this.remove()"></div>
+      <div>
+        <h3>Spiky Pals</h3>
+        <p class="status">В разработке. Питомцы в духе Sims и тамагочи, стиль: чёрные колючие чиби.</p>
+        <ul>
+          <li>Питомец живёт как персонаж Sims: ест, работает, устаёт; еду надо приготовить или заказать</li>
+          <li>Работа через мини-игры: чем лучше сыграл, тем больше заработал</li>
+          <li>Работа из дома: музыкант, программист, художник</li>
+          <li>Строительство и обстановка дома за монеты</li>
+          <li>Случайная внешность питомца при первом входе</li>
+        </ul>
+        <p class="stack">Luau, DataStore, камера в стиле Sims</p>
+      </div>
+    </article>
+
+    <article class="proj" id="course">
+      <div class="shot">Сюда скриншот урока или игры ученика<img src="img/course.gif" alt="Игра ученика из курса" loading="lazy" onerror="this.remove()"></div>
+      <div>
+        <h3>Мои курсы: Roblox, Python, Unity</h3>
+        <p class="status">Пишу курсы для детей сам: сюжет, код, презентации, методички.</p>
+        <ul>
+          <li><b>Roblox Studio</b>, 9–12 лет: 36 уроков по 90 минут, 6 модулей, от первой детали до своей игры</li>
+          <li><b>Unity 6</b>, 11–14 лет: 36 уроков, URP, сюжет про игровую студию; модули Tycoon и бесконечный раннер. Весь код проверен в Unity 6 (новый Input System)</li>
+          <li><b>Python</b>: tkinter и pygame для учеников, которые уже знают ООП</li>
+          <li>Интенсивы на каникулы: <b>Godot</b> (2D-арена за 5 дней), <b>GDevelop 5</b> (платформер, раннер, ритм-игра)</li>
+          <li>Проверяю на реальных группах и переделываю по итогам</li>
+        </ul>
+        <p class="stack">Luau, C#, Python, Godot, GDevelop, LEGO WeDo, Minecraft Education</p>
+      </div>
+    </article>
+  </section>
+
+  <section id="other">
+    <h2>Другие проекты</h2>
+    <div class="others">
+      <div>
+        <h3>Образовательная платформа</h3>
+        <p>Блочное программирование: ведёшь ровер по лабиринту. React, Vite, Firebase.</p>
+        <a href="https://wsejhfbw.github.io/supreme-octo-happiness/">Демо</a> · <a href="https://github.com/wsejhfbw/supreme-octo-happiness">Код</a>
+      </div>
+      <div>
+        <h3>Python Ровер · Станция</h3>
+        <p>Сайт для повторения тем по Python с интерпретатором прямо в браузере.</p>
+        <a href="https://ivan3232j.github.io/python-station-site/">Открыть</a>
+      </div>
+      <div>
+        <h3>Скрипты для курса Roblox</h3>
+        <p>Сайт с готовыми скриптами к урокам моего курса.</p>
+        <a href="https://ivan3232j.github.io/roblox-scripts/">Открыть</a>
+      </div>
+      <div>
+        <h3>dog_walker</h3>
+        <p>Мобильное приложение на Flutter: учёт прогулок с собакой и напоминания о лекарствах.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="code">
+    <h2>Пример кода</h2>
+    <p class="status">Упрощённый пример: так устроены раунды в Last Station. Состояния меняются только по разрешённым переходам, клиенты узнают о смене через один RemoteEvent, а все цифры берутся из GameConfig.</p>
+<pre><code><span class="com">--!strict</span>
+<span class="com">-- RoundManager: раунды как машина состояний</span>
+<span class="kw">local</span> Players = game:GetService(<span class="str">"Players"</span>)
+<span class="kw">local</span> ReplicatedStorage = game:GetService(<span class="str">"ReplicatedStorage"</span>)
+
+<span class="kw">local</span> GameConfig = require(ReplicatedStorage.Shared.GameConfig)
+<span class="kw">local</span> Remotes = require(ReplicatedStorage.Shared.Remotes)
+
+<span class="kw">export</span> <span class="kw">type</span> State = <span class="str">"Waiting"</span> | <span class="str">"Playing"</span> | <span class="str">"Ended"</span>
+
+<span class="com">-- Из какого состояния в какое можно перейти. Остальные переходы запрещены</span>
+<span class="kw">local</span> TRANSITIONS: { [State]: { [State]: boolean } } = {
+    Waiting = { Playing = <span class="kw">true</span> },
+    Playing = { Ended = <span class="kw">true</span> },
+    Ended = { Waiting = <span class="kw">true</span> },
+}
+
+<span class="kw">local</span> RoundManager = {}
+<span class="kw">local</span> current: State = <span class="str">"Waiting"</span>
+
+<span class="kw">function</span> RoundManager.GetState(): State
+    <span class="kw">return</span> current
+<span class="kw">end</span>
+
+<span class="kw">function</span> RoundManager.SetState(nextState: State)
+    <span class="kw">if</span> <span class="kw">not</span> TRANSITIONS[current][nextState] <span class="kw">then</span>
+        warn(<span class="str">`RoundManager: нельзя перейти {current} -&gt; {nextState}`</span>)
+        <span class="kw">return</span>
+    <span class="kw">end</span>
+    print(<span class="str">`RoundManager: {current} -&gt; {nextState}`</span>)
+    current = nextState
+    Remotes.RoundState:FireAllClients(nextState)
+<span class="kw">end</span>
+
+<span class="com">-- Главный цикл: ждём игроков, играем раунд, показываем итоги</span>
+<span class="kw">function</span> RoundManager.Run()
+    <span class="kw">while</span> <span class="kw">true</span> <span class="kw">do</span>
+        <span class="kw">repeat</span> task.wait(1) <span class="kw">until</span> #Players:GetPlayers() &gt;= GameConfig.MinPlayers
+
+        RoundManager.SetState(<span class="str">"Playing"</span>)
+        task.wait(GameConfig.RoundLength)
+
+        RoundManager.SetState(<span class="str">"Ended"</span>)
+        task.wait(GameConfig.IntermissionLength)
+
+        RoundManager.SetState(<span class="str">"Waiting"</span>)
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">return</span> RoundManager</code></pre>
+    <div class="output">
+      <div class="explorer-head">Output</div>
+      <ol class="log" id="log" aria-label="Output"></ol>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>Навыки</h2>
+    <div class="skills">
+      <div><h3>Roblox</h3><p>Luau, ModuleScripts, RemoteEvents, DataStore, GUI из скриптов</p></div>
+      <div><h3>Другие движки</h3><p>Unity (C#), Godot, GDevelop</p></div>
+      <div><h3>Ещё</h3><p>Python, React, Firebase, Flutter, Git, GitHub Pages</p></div>
+    </div>
+  </section>
+
+  <section id="exp">
+    <h2>Опыт</h2>
+    <div class="job">
+      <h3>Алгоритмика</h3>
+      <div class="when">Преподаватель и автор курсов</div>
+      <p>Пишу и веду курсы по Roblox, Unity, Godot и Python для детей 9–14 лет. Каждый курс собираю сам: от идеи и сюжета до кода, презентаций и методичек.</p>
+    </div>
+    <div class="job">
+      <h3>Колледж СФ УУНиТ</h3>
+      <div class="when">Преподаватель · 2 года</div>
+      <p>Преподавал в колледже Стерлитамакского филиала Уфимского университета науки и технологий.</p>
+    </div>
+
+    <h2 class="sub">Образование</h2>
+    <div class="job">
+      <h3>СФ УУНиТ</h3>
+      <div class="when">Бакалавр · Информационная безопасность · Диплом с отличием</div>
+    </div>
+  </section>
+
+  <footer id="contacts">
+    <h2>Контакты</h2>
+    <div class="btns">
+      <a class="btn main" href="https://t.me/dj32j32j">Telegram</a>
+      <a class="btn" href="https://www.instagram.com/dj32j/">Instagram</a>
+    </div>
+  </footer>
+
+</div>
+<script>
+  // Клик по строке Explorer: подсветить её и прокрутить к разделу
+  document.querySelectorAll('.tree button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tree button').forEach(function (b) { b.classList.remove('on'); });
+      btn.classList.add('on');
+      document.getElementById(btn.dataset.go).scrollIntoView();
+    });
+  });
+
+  // Properties: show the hovered/focused Explorer item, like Studio
+  var PROPS = {
+    "Workspace": {
+      "Name": "Иван",
+      "Role": "Roblox-разработчик",
+      "Language": "Luau",
+      "OpenToWork": true
+    },
+    "LastStation": {
+      "ClassName": "Model",
+      "Status": "Опубликована",
+      "Genre": "Кооп-выживание",
+      "Playable": true
+    },
+    "RoundManager": {
+      "ClassName": "ModuleScript",
+      "Pattern": "Машина состояний",
+      "States": "3",
+      "RunContext": "Server"
+    },
+    "GameConfig": {
+      "ClassName": "ModuleScript",
+      "Role": "Все настройки игры",
+      "MagicNumbers": "0",
+      "RunContext": "Shared"
+    },
+    "SpikyPals": {
+      "ClassName": "Model",
+      "Status": "В разработке",
+      "Genre": "Питомцы, симулятор жизни",
+      "Style": "Чёрные колючие чиби"
+    },
+    "Courses": {
+      "ClassName": "Folder",
+      "Roblox": "36 уроков",
+      "Unity": "36 уроков",
+      "Ages": "9–14 лет"
+    },
+    "OtherProjects": {
+      "ClassName": "Folder",
+      "Web": "React, Firebase",
+      "Mobile": "Flutter",
+      "Hosting": "GitHub Pages"
+    },
+    "Skills": {
+      "ClassName": "Folder",
+      "Primary": "Luau",
+      "Also": "C#, Python",
+      "Engines": "Unity, Godot, GDevelop"
+    },
+    "Experience": {
+      "ClassName": "Folder",
+      "Current": "Алгоритмика",
+      "Before": "Колледж СФ УУНиТ",
+      "Degree": "Бакалавр ИБ, с отличием"
+    },
+    "Contacts": {
+      "ClassName": "Script",
+      "Telegram": "@dj32j32j",
+      "Instagram": "dj32j",
+      "OpenToWork": true
+    }
+  };
+  var propsHead = document.getElementById('props-head');
+  var propsList = document.getElementById('props');
+  function showProps(name) {
+    var p = PROPS[name]; if (!p) return;
+    propsHead.textContent = 'Properties — ' + name;
+    propsList.textContent = '';
+    Object.keys(p).forEach(function (k) {
+      var dt = document.createElement('dt'); dt.textContent = k;
+      var dd = document.createElement('dd');
+      if (p[k] === true) { var c = document.createElement('span'); c.className = 'check'; dd.appendChild(c); dd.appendChild(document.createTextNode('true')); }
+      else dd.textContent = p[k];
+      propsList.appendChild(dt); propsList.appendChild(dd);
+    });
+  }
+  document.querySelectorAll('.tree button').forEach(function (btn) {
+    var name = btn.textContent.trim();
+    btn.addEventListener('mouseenter', function () { showProps(name); });
+    btn.addEventListener('focus', function () { showProps(name); });
+  });
+  showProps('Workspace');
+
+  // Output: print what RoundManager would log when the code scrolls into view
+  var LOG = [["info", "RoundManager: Waiting -> Playing", "RoundManager:30"], ["info", "RoundManager: Playing -> Ended", "RoundManager:30"], ["warn", "RoundManager: нельзя перейти Ended -> Playing", "RoundManager:27"], ["info", "RoundManager: Ended -> Waiting", "RoundManager:30"]];
+  var logEl = document.getElementById('log');
+  function pad(n, w) { return String(n).padStart(w || 2, '0'); }
+  function addLine(item, t) {
+    var li = document.createElement('li');
+    if (item[0] === 'warn') li.className = 'warn';
+    var ts = document.createElement('span'); ts.className = 'ts';
+    ts.textContent = pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds()) + '.' + pad(t.getMilliseconds(), 3) + '  ';
+    var src = document.createElement('span'); src.className = 'src'; src.textContent = '  -  Server - ' + item[2];
+    li.appendChild(ts); li.appendChild(document.createTextNode(item[1])); li.appendChild(src);
+    logEl.appendChild(li);
+  }
+  function runLog() {
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var t = Date.now();
+    LOG.forEach(function (item, i) {
+      if (still) addLine(item, new Date(t + i * 1500));
+      else setTimeout(function () { addLine(item, new Date()); }, 400 + i * 900);
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { io.disconnect(); runLog(); }
+    }, { threshold: 0.6 });
+    io.observe(logEl);
+  } else runLog();
+</script>
+</body>
+</html>
