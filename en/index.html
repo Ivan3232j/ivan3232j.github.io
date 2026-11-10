@@ -130,9 +130,11 @@
   }
   .kw { color: var(--kw); } .str { color: var(--str); } .com { color: var(--com); }
 
-  .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 48px; max-width: 54em; }
+  .proj:not(:has(.shot)) { grid-template-columns: 1fr; max-width: 46em; }
   .skills h3 { font-size: 18px; }
   .skills p { margin: 0; color: var(--muted); }
+  .skills code { font: 0.9em "JetBrains Mono", monospace; font-variant-ligatures: none; }
 
   .job { margin-bottom: 28px; max-width: 46em; }
   .job .when { color: var(--muted); font-size: 15px; }
@@ -192,10 +194,10 @@
     <h2>Projects</h2>
 
     <article class="proj" id="space">
-      <div class="shot">Gameplay GIF<img src="../img/space.gif" alt="Last Station: Space Miners gameplay" loading="lazy" onerror="this.remove()"></div>
+      <div class="shot"><img src="../img/space.gif" alt="Last Station: Space Miners gameplay" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Last Station: Space Miners</h3>
-        <p class="status">Live on Roblox. A co-op survival game: players work together to keep a dying space station running and gather resources. Below is what I built myself.</p>
+        <p class="status">Live on Roblox. A co-op survival game: players work together to keep a dying space station running and gather resources. All the technical work is mine.</p>
         <ul>
           <li>Rounds driven by a state machine (RoundManager)</li>
           <li>All game settings in a single GameConfig module</li>
@@ -209,7 +211,7 @@
     </article>
 
     <article class="proj" id="spiky">
-      <div class="shot">Screenshot or GIF<img src="../img/spiky.gif" alt="Spiky Pals: a pet at home" loading="lazy" onerror="this.remove()"></div>
+      <div class="shot"><img src="../img/spiky.gif" alt="Spiky Pals: a pet at home" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Spiky Pals</h3>
         <p class="status">In development. Virtual pets inspired by The Sims and Tamagotchi, drawn as black spiky chibis.</p>
@@ -225,7 +227,7 @@
     </article>
 
     <article class="proj" id="course">
-      <div class="shot">Lesson screenshot or student game<img src="../img/course.gif" alt="A student game from the course" loading="lazy" onerror="this.remove()"></div>
+      <div class="shot"><img src="../img/course.gif" alt="A student game from the course" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>My courses: Roblox, Python, Unity</h3>
         <p class="status">I write courses for kids myself: story, code, slides and teacher guides.</p>
@@ -328,8 +330,9 @@
   <section id="skills">
     <h2>Skills</h2>
     <div class="skills">
-      <div><h3>Roblox</h3><p>Luau, ModuleScripts, RemoteEvents, DataStore, GUI built from scripts</p></div>
+      <div><h3>Roblox</h3><p>Typed Luau (<code>--!strict</code>), ModuleScripts, RemoteEvents, DataStore, GUI built from scripts</p></div>
       <div><h3>Other engines</h3><p>Unity (C#), Godot, GDevelop</p></div>
+      <div><h3>AI tools</h3><p>Claude Code: I write, review and ship code together with AI. This site was built the same way.</p></div>
       <div><h3>Also</h3><p>Python, React, Firebase, Flutter, Git, GitHub Pages</p></div>
     </div>
   </section>
@@ -338,7 +341,7 @@
     <h2>Experience</h2>
     <div class="job">
       <h3>Algorithmics</h3>
-      <div class="when">Teacher and course author</div>
+      <div class="when">Teacher and course author · since 2024</div>
       <p>I write and teach Roblox, Unity, Godot and Python courses for kids aged 9–14. I build each course myself, from the idea and story to the code, slides and teacher guides.</p>
     </div>
     <div class="job">
@@ -378,7 +381,7 @@
     "Workspace": {
       "Name": "Ivan",
       "Role": "Roblox developer",
-      "Language": "Luau",
+      "Language": "Typed Luau",
       "OpenToWork": true
     },
     "LastStation": {

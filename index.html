@@ -130,9 +130,11 @@
   }
   .kw { color: var(--kw); } .str { color: var(--str); } .com { color: var(--com); }
 
-  .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 48px; max-width: 54em; }
+  .proj:not(:has(.shot)) { grid-template-columns: 1fr; max-width: 46em; }
   .skills h3 { font-size: 18px; }
   .skills p { margin: 0; color: var(--muted); }
+  .skills code { font: 0.9em "JetBrains Mono", monospace; font-variant-ligatures: none; }
 
   .job { margin-bottom: 28px; max-width: 46em; }
   .job .when { color: var(--muted); font-size: 15px; }
@@ -193,10 +195,10 @@
     <h2>Проекты</h2>
 
     <article class="proj" id="space">
-      <div class="shot">Сюда гифка геймплея<img src="img/space.gif" alt="Геймплей Last Station: Space Miners" loading="lazy" onerror="this.remove()"></div>
+      <div class="shot"><img src="img/space.gif" alt="Геймплей Last Station: Space Miners" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Last Station: Space Miners</h3>
-        <p class="status">Опубликована на Roblox. Командный выживач: игроки вместе поддерживают умирающую космическую станцию и добывают ресурсы. Ниже то, что я сделал сам.</p>
+        <p class="status">Опубликована на Roblox. Командный выживач: игроки вместе поддерживают умирающую космическую станцию и добывают ресурсы. Вся техническая часть моя.</p>
         <ul>
           <li>Раунды на машине состояний (RoundManager)</li>
           <li>Все настройки игры в одном модуле GameConfig</li>
@@ -210,7 +212,7 @@
     </article>
 
     <article class="proj" id="spiky">
-      <div class="shot">Сюда скриншот или гифка<img src="img/spiky.gif" alt="Spiky Pals: питомец в доме" loading="lazy" onerror="this.remove()"></div>
+      <div class="shot"><img src="img/spiky.gif" alt="Spiky Pals: питомец в доме" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Spiky Pals</h3>
         <p class="status">В разработке. Питомцы в духе Sims и тамагочи, стиль: чёрные колючие чиби.</p>
@@ -226,7 +228,7 @@
     </article>
 
     <article class="proj" id="course">
-      <div class="shot">Сюда скриншот урока или игры ученика<img src="img/course.gif" alt="Игра ученика из курса" loading="lazy" onerror="this.remove()"></div>
+      <div class="shot"><img src="img/course.gif" alt="Игра ученика из курса" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Мои курсы: Roblox, Python, Unity</h3>
         <p class="status">Пишу курсы для детей сам: сюжет, код, презентации, методички.</p>
@@ -329,8 +331,9 @@
   <section id="skills">
     <h2>Навыки</h2>
     <div class="skills">
-      <div><h3>Roblox</h3><p>Luau, ModuleScripts, RemoteEvents, DataStore, GUI из скриптов</p></div>
+      <div><h3>Roblox</h3><p>Typed Luau (<code>--!strict</code>), ModuleScripts, RemoteEvents, DataStore, GUI из скриптов</p></div>
       <div><h3>Другие движки</h3><p>Unity (C#), Godot, GDevelop</p></div>
+      <div><h3>AI-инструменты</h3><p>Claude Code: пишу, проверяю и выкладываю код вместе с AI. Этот сайт сделан так же.</p></div>
       <div><h3>Ещё</h3><p>Python, React, Firebase, Flutter, Git, GitHub Pages</p></div>
     </div>
   </section>
@@ -339,7 +342,7 @@
     <h2>Опыт</h2>
     <div class="job">
       <h3>Алгоритмика</h3>
-      <div class="when">Преподаватель и автор курсов</div>
+      <div class="when">Преподаватель и автор курсов · с 2024</div>
       <p>Пишу и веду курсы по Roblox, Unity, Godot и Python для детей 9–14 лет. Каждый курс собираю сам: от идеи и сюжета до кода, презентаций и методичек.</p>
     </div>
     <div class="job">
@@ -379,7 +382,7 @@
     "Workspace": {
       "Name": "Иван",
       "Role": "Roblox-разработчик",
-      "Language": "Luau",
+      "Language": "Typed Luau",
       "OpenToWork": true
     },
     "LastStation": {
