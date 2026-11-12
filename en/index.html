@@ -175,7 +175,9 @@
         <li><button class="d1" data-go="space"><span class="ico i-model"></span>LastStation</button></li>
         <li><button class="d2" data-go="code"><span class="ico i-module"></span>RoundManager</button></li>
         <li><button class="d2" data-go="space"><span class="ico i-module"></span>GameConfig</button></li>
+        <li><button class="d2" data-go="space"><span class="ico i-module"></span>Monetization</button></li>
         <li><button class="d1" data-go="spiky"><span class="ico i-model"></span>SpikyPals</button></li>
+        <li><button class="d1" data-go="bunker"><span class="ico i-model"></span>FluffyBunker</button></li>
         <li><button class="d1" data-go="course"><span class="ico i-model"></span>Courses</button></li>
         <li><button class="d1" data-go="other"><span class="ico i-model"></span>OtherProjects</button></li>
         <li><button data-go="skills"><span class="ico i-folder"></span>Skills</button></li>
@@ -197,15 +199,17 @@
       <div class="shot"><img src="../img/space.gif" alt="Last Station: Space Miners gameplay" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Last Station: Space Miners</h3>
-        <p class="status">Live on Roblox. A co-op survival game: players work together to keep a dying space station running and gather resources. All the technical work is mine.</p>
+        <p class="status">Live on Roblox. Co-op survival: players launch from the station, mine resources and keep it from losing power. All the technical work is mine.</p>
         <ul>
-          <li>Rounds driven by a state machine (RoundManager)</li>
-          <li>All game settings in a single GameConfig module</li>
-          <li>Hazard and resource systems with a clear lifecycle</li>
-          <li>Player data split into per-run and long-term progress (RunState and MetaProfile)</li>
-          <li>Removed deprecated APIs and moved all RemoteEvents into one place</li>
+          <li>Match flow as a RoundManager state machine: Expedition → Alert → Defense</li>
+          <li>Server-authoritative: every client action is validated on the server</li>
+          <li>Balance in a single GameConfig module, all RemoteEvents in a single Remotes module</li>
+          <li>Data split into per-match (RunState) and long-term progress (MetaProfile) on ProfileStore with session locking</li>
+          <li>Monetization: Game Passes and a Developer Product through a single ProcessReceipt; a purchase is never granted twice</li>
+          <li>Analytics with AnalyticsService: onboarding funnel and economy</li>
+          <li>Hazards: asteroids, radiation, solar flares; replaced deprecated BodyGyro with AlignOrientation</li>
         </ul>
-        <p class="stack">Luau, DataStore, RemoteEvents, ModuleScripts</p>
+        <p class="stack">Typed Luau, ProfileStore, MarketplaceService, AnalyticsService, Rojo, Git</p>
         <p><a href="https://www.roblox.com/games/113738775535567/Last-Station-Space-Miners">Play on Roblox</a></p>
       </div>
     </article>
@@ -216,13 +220,28 @@
         <h3>Spiky Pals</h3>
         <p class="status">In development. Virtual pets inspired by The Sims and Tamagotchi, drawn as black spiky chibis.</p>
         <ul>
-          <li>Pets live like Sims characters: they eat, work and get tired; food has to be cooked or ordered</li>
-          <li>Jobs are mini-games: the better you play, the more you earn</li>
-          <li>Work-from-home jobs: musician, programmer, artist</li>
-          <li>Build and furnish a house with coins</li>
-          <li>Random pet appearance on first join</li>
+          <li>Pets live like Sims characters: they walk to furniture with PathfindingService, eat, sleep and get tired; food can be cooked or ordered</li>
+          <li>Jobs are mini-games (musician, programmer, artist); results are checked by the server</li>
+          <li>Grid-based house building: the server validates placement and charges coins, the whole house is saved</li>
+          <li>A plot for every player, gardening, pet personalities</li>
+          <li>Pet appearance is generated from "genes" on first join</li>
         </ul>
-        <p class="stack">Luau, DataStore, Sims-style camera</p>
+        <p class="stack">Typed Luau, ProfileStore, PathfindingService, AnalyticsService, Rojo</p>
+      </div>
+    </article>
+
+    <article class="proj" id="bunker">
+      <div class="shot"><img src="../img/bunker.gif" alt="Fluffy Bunker: dwellers carrying crates between rooms" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div>
+        <h3>Fluffy Bunker</h3>
+        <p class="status">In development. A bunker in cross-section: rooms work as machines and animal dwellers carry crates between them like a living conveyor belt.</p>
+        <ul>
+          <li>Heat economy: Cold and Thaw seasons, deeper floors are warmer; boilers and peat pits</li>
+          <li>Balance is checked by a separate simulator script before it goes into the game</li>
+          <li>Saving with session locking, phone controls</li>
+          <li>Strict typing checked with luau-lsp, tests</li>
+        </ul>
+        <p class="stack">Typed Luau, luau-lsp, Rojo, Git</p>
       </div>
     </article>
 
@@ -402,11 +421,23 @@
       "MagicNumbers": "0",
       "RunContext": "Shared"
     },
+    "Monetization": {
+      "ClassName": "ModuleScript",
+      "Handles": "ProcessReceipt",
+      "Products": "Game Pass, Dev Product",
+      "Idempotent": true
+    },
     "SpikyPals": {
       "ClassName": "Model",
       "Status": "In development",
       "Genre": "Pet life sim",
       "Style": "Black spiky chibis"
+    },
+    "FluffyBunker": {
+      "ClassName": "Model",
+      "Status": "In development",
+      "Genre": "Bunker builder",
+      "Dwellers": "Marmots, gophers, foxes"
     },
     "Courses": {
       "ClassName": "Folder",

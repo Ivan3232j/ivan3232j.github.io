@@ -176,7 +176,9 @@
         <li><button class="d1" data-go="space"><span class="ico i-model"></span>LastStation</button></li>
         <li><button class="d2" data-go="code"><span class="ico i-module"></span>RoundManager</button></li>
         <li><button class="d2" data-go="space"><span class="ico i-module"></span>GameConfig</button></li>
+        <li><button class="d2" data-go="space"><span class="ico i-module"></span>Monetization</button></li>
         <li><button class="d1" data-go="spiky"><span class="ico i-model"></span>SpikyPals</button></li>
+        <li><button class="d1" data-go="bunker"><span class="ico i-model"></span>FluffyBunker</button></li>
         <li><button class="d1" data-go="course"><span class="ico i-model"></span>Courses</button></li>
         <li><button class="d1" data-go="other"><span class="ico i-model"></span>OtherProjects</button></li>
         <li><button data-go="skills"><span class="ico i-folder"></span>Skills</button></li>
@@ -198,15 +200,17 @@
       <div class="shot"><img src="img/space.gif" alt="Геймплей Last Station: Space Miners" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Last Station: Space Miners</h3>
-        <p class="status">Опубликована на Roblox. Командный выживач: игроки вместе поддерживают умирающую космическую станцию и добывают ресурсы. Вся техническая часть моя.</p>
+        <p class="status">Опубликована на Roblox. Кооп-выживание: игроки вылетают со станции, добывают ресурсы и не дают ей обесточиться. Вся техническая часть моя.</p>
         <ul>
-          <li>Раунды на машине состояний (RoundManager)</li>
-          <li>Все настройки игры в одном модуле GameConfig</li>
-          <li>Системы опасностей и ресурсов с понятным жизненным циклом</li>
-          <li>Данные игрока разделены на забег и долгий прогресс (RunState и MetaProfile)</li>
-          <li>Убрал устаревшие API и собрал RemoteEvents в одном месте</li>
+          <li>Матч на машине состояний RoundManager: экспедиция → тревога → оборона</li>
+          <li>Сервер решает всё: каждое действие клиента проверяется на сервере</li>
+          <li>Баланс в одном модуле GameConfig, все RemoteEvents в одном модуле Remotes</li>
+          <li>Данные разделены на матч (RunState) и долгий прогресс (MetaProfile) на ProfileStore с блокировкой сессии</li>
+          <li>Монетизация: Game Pass и Developer Product через единый ProcessReceipt, одна покупка не выдаётся дважды</li>
+          <li>Аналитика через AnalyticsService: воронка новичка и экономика</li>
+          <li>Опасности: астероиды, радиация, солнечные вспышки; устаревший BodyGyro заменил на AlignOrientation</li>
         </ul>
-        <p class="stack">Luau, DataStore, RemoteEvents, ModuleScripts</p>
+        <p class="stack">Typed Luau, ProfileStore, MarketplaceService, AnalyticsService, Rojo, Git</p>
         <p><a href="https://www.roblox.com/games/113738775535567/Last-Station-Space-Miners">Играть на Roblox</a></p>
       </div>
     </article>
@@ -217,13 +221,28 @@
         <h3>Spiky Pals</h3>
         <p class="status">В разработке. Питомцы в духе Sims и тамагочи, стиль: чёрные колючие чиби.</p>
         <ul>
-          <li>Питомец живёт как персонаж Sims: ест, работает, устаёт; еду надо приготовить или заказать</li>
-          <li>Работа через мини-игры: чем лучше сыграл, тем больше заработал</li>
-          <li>Работа из дома: музыкант, программист, художник</li>
-          <li>Строительство и обстановка дома за монеты</li>
-          <li>Случайная внешность питомца при первом входе</li>
+          <li>Питомец живёт как персонаж Sims: сам ходит к мебели через PathfindingService, ест, спит, устаёт; еду можно приготовить или заказать</li>
+          <li>Работа через мини-игры: музыкант, программист, художник; результат проверяет сервер</li>
+          <li>Строительство дома по сетке: сервер проверяет место и списывает монеты, дом сохраняется целиком</li>
+          <li>Свой участок у каждого игрока, садоводство, характеры питомцев</li>
+          <li>Внешность питомца собирается из «генов» при первом входе</li>
         </ul>
-        <p class="stack">Luau, DataStore, камера в стиле Sims</p>
+        <p class="stack">Typed Luau, ProfileStore, PathfindingService, AnalyticsService, Rojo</p>
+      </div>
+    </article>
+
+    <article class="proj" id="bunker">
+      <div class="shot"><img src="img/bunker.gif" alt="Fluffy Bunker: жители носят ящики между комнатами" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div>
+        <h3>Fluffy Bunker</h3>
+        <p class="status">В разработке. Бункер в разрезе: комнаты работают как станки, а зверьки-жители сами носят ящики между ними, как живой конвейер.</p>
+        <ul>
+          <li>Экономика тепла: холод и оттепель, чем глубже этаж, тем теплее; котельные и торфяники</li>
+          <li>Баланс сначала проверяет отдельный скрипт-симулятор, потом он попадает в игру</li>
+          <li>Сохранение с блокировкой сессии, управление с телефона</li>
+          <li>Строгая типизация с проверкой через luau-lsp, тесты</li>
+        </ul>
+        <p class="stack">Typed Luau, luau-lsp, Rojo, Git</p>
       </div>
     </article>
 
@@ -403,11 +422,23 @@
       "MagicNumbers": "0",
       "RunContext": "Shared"
     },
+    "Monetization": {
+      "ClassName": "ModuleScript",
+      "Handles": "ProcessReceipt",
+      "Products": "Game Pass, Dev Product",
+      "Idempotent": true
+    },
     "SpikyPals": {
       "ClassName": "Model",
       "Status": "В разработке",
       "Genre": "Питомцы, симулятор жизни",
       "Style": "Чёрные колючие чиби"
+    },
+    "FluffyBunker": {
+      "ClassName": "Model",
+      "Status": "В разработке",
+      "Genre": "Строитель бункера",
+      "Dwellers": "Сурки, суслики, песцы"
     },
     "Courses": {
       "ClassName": "Folder",
