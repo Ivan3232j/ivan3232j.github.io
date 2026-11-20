@@ -176,6 +176,8 @@
         <li><button class="d2" data-go="code"><span class="ico i-module"></span>RoundManager</button></li>
         <li><button class="d2" data-go="space"><span class="ico i-module"></span>GameConfig</button></li>
         <li><button class="d2" data-go="space"><span class="ico i-module"></span>Monetization</button></li>
+        <li><button class="d1" data-go="dream"><span class="ico i-model"></span>DreamFlight</button></li>
+        <li><button class="d2" data-go="dream"><span class="ico i-module"></span>TrackGenerator</button></li>
         <li><button class="d1" data-go="spiky"><span class="ico i-model"></span>SpikyPals</button></li>
         <li><button class="d1" data-go="bunker"><span class="ico i-model"></span>FluffyBunker</button></li>
         <li><button class="d1" data-go="course"><span class="ico i-model"></span>Courses</button></li>
@@ -211,6 +213,26 @@
         </ul>
         <p class="stack">Typed Luau, ProfileStore, MarketplaceService, AnalyticsService, Rojo, Git</p>
         <p><a href="https://www.roblox.com/games/113738775535567/Last-Station-Space-Miners">Play on Roblox</a></p>
+      </div>
+    </article>
+
+    <article class="proj" id="dream">
+      <div class="shot"><img src="../img/dream.jpg" alt="Doodle Dream Flight: the hero flies into a doodled monster's mouth" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div>
+        <h3>Doodle Dream Flight ✏️</h3>
+        <p class="status">Live on Roblox. A dream flight through a world of kids' crayon drawings: fly through rings, slip into snapping monster mouths, pull off tricks and chain combos.</p>
+        <ul>
+          <li>Courses come from a seeded generator and a validator checks they're beatable: the test runs 60 tracks, difficulty rises stage by stage</li>
+          <li>Flight: the camera looks exactly where you aim while the body glides after it; mouse, swipe or stick, boost with a recharge</li>
+          <li>Monster mouths open and close on the shared server clock; the server checks each pass with a lag allowance</li>
+          <li>Server-authoritative score and combo, speed checks (anti-cheat) and a cap on trick farming</li>
+          <li>Crayon-drawing look: paper sky, comic ink outlines from a pooled set of Highlights (Roblox draws at most 31), ASCII-terminal HUD</li>
+          <li>English and Russian: all text in one module, fonts picked per language</li>
+          <li>Analytics with AnalyticsService: onboarding funnel, stage progression, economy</li>
+          <li>Built with AI agents: I wrote the spec and task briefs, Gemini wrote code, Claude Code reviewed and tested it in Studio via MCP</li>
+        </ul>
+        <p class="stack">Typed Luau, Rojo, DataStore, AnalyticsService, Studio MCP, Claude Code, Gemini, Git</p>
+        <p><a href="https://www.roblox.com/games/128047347039665/Doodle-Dream-Flight">Play on Roblox</a></p>
       </div>
     </article>
 
@@ -431,6 +453,18 @@
       "Handles": "ProcessReceipt",
       "Products": "Game Pass, Dev Product",
       "Idempotent": true
+    },
+    "DreamFlight": {
+      "ClassName": "Model",
+      "Status": "Published",
+      "Genre": "Flight, ring courses",
+      "Style": "Crayon doodle, comic"
+    },
+    "TrackGenerator": {
+      "ClassName": "ModuleScript",
+      "Input": "Stage and seed",
+      "Validated": "60/60 tracks",
+      "RunContext": "Shared"
     },
     "SpikyPals": {
       "ClassName": "Model",

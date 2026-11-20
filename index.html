@@ -177,6 +177,8 @@
         <li><button class="d2" data-go="code"><span class="ico i-module"></span>RoundManager</button></li>
         <li><button class="d2" data-go="space"><span class="ico i-module"></span>GameConfig</button></li>
         <li><button class="d2" data-go="space"><span class="ico i-module"></span>Monetization</button></li>
+        <li><button class="d1" data-go="dream"><span class="ico i-model"></span>DreamFlight</button></li>
+        <li><button class="d2" data-go="dream"><span class="ico i-module"></span>TrackGenerator</button></li>
         <li><button class="d1" data-go="spiky"><span class="ico i-model"></span>SpikyPals</button></li>
         <li><button class="d1" data-go="bunker"><span class="ico i-model"></span>FluffyBunker</button></li>
         <li><button class="d1" data-go="course"><span class="ico i-model"></span>Courses</button></li>
@@ -212,6 +214,26 @@
         </ul>
         <p class="stack">Typed Luau, ProfileStore, MarketplaceService, AnalyticsService, Rojo, Git</p>
         <p><a href="https://www.roblox.com/games/113738775535567/Last-Station-Space-Miners">Играть на Roblox</a></p>
+      </div>
+    </article>
+
+    <article class="proj" id="dream">
+      <div class="shot"><img src="img/dream.jpg" alt="Doodle Dream Flight: герой влетает в пасть нарисованного монстра" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div>
+        <h3>Doodle Dream Flight ✏️</h3>
+        <p class="status">Опубликована на Roblox. Полёт во сне по миру детских рисунков: пролетаешь кольца, проскакиваешь в пасти монстров, делаешь трюки и собираешь комбо.</p>
+        <ul>
+          <li>Трассы строит генератор по seed, валидатор проверяет проходимость: тест прогоняет 60 трасс, сложность растёт от этапа к этапу</li>
+          <li>Полёт: камера смотрит точно в прицел, а тело мягко догоняет; мышь, свайп или стик, буст с перезарядкой</li>
+          <li>Пасти монстров открываются по общему серверному времени, сервер проверяет пролёт с допуском на пинг</li>
+          <li>Сервер считает очки и комбо, проверяет скорость (античит) и не даёт фармить трюки</li>
+          <li>Стиль детского рисунка: «бумажное» небо, комиксная обводка через пул Highlight (в Roblox их максимум 31), интерфейс как ASCII-терминал</li>
+          <li>Английский и русский: все тексты в одном модуле, шрифты подбираются под язык</li>
+          <li>Аналитика через AnalyticsService: воронка новичка, прогрессия этапов, экономика</li>
+          <li>Делал с AI-агентами: я писал ТЗ и задания, Gemini писал код, Claude Code проверял и тестировал в Studio через MCP</li>
+        </ul>
+        <p class="stack">Typed Luau, Rojo, DataStore, AnalyticsService, Studio MCP, Claude Code, Gemini, Git</p>
+        <p><a href="https://www.roblox.com/games/128047347039665/Doodle-Dream-Flight">Играть на Roblox</a></p>
       </div>
     </article>
 
@@ -432,6 +454,18 @@
       "Handles": "ProcessReceipt",
       "Products": "Game Pass, Dev Product",
       "Idempotent": true
+    },
+    "DreamFlight": {
+      "ClassName": "Model",
+      "Status": "Опубликована",
+      "Genre": "Полёт, трассы из колец",
+      "Style": "Детский рисунок, комикс"
+    },
+    "TrackGenerator": {
+      "ClassName": "ModuleScript",
+      "Input": "Этап и seed",
+      "Validated": "60/60 трасс",
+      "RunContext": "Shared"
     },
     "SpikyPals": {
       "ClassName": "Model",
