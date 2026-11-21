@@ -119,8 +119,8 @@
 
   /* Output window */
   .output { margin-top: 12px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px; }
-  .log { list-style: none; margin: 0; padding: 10px 16px; min-height: 7.5em; font: 13px/1.7 "JetBrains Mono", monospace; overflow-x: auto; }
-  .log li { white-space: nowrap; }
+  .log { list-style: none; margin: 0; padding: 10px 16px; min-height: 9em; font: 13px/1.7 "JetBrains Mono", monospace; overflow-x: auto; }
+  .log li { margin-bottom: 4px; }
   .log .ts, .log .src { color: var(--muted); }
   .log .warn { color: var(--warn); }
 
@@ -174,9 +174,9 @@
       <ul class="tree">
         <li><button data-go="projects"><span class="ico i-folder"></span>Workspace</button></li>
         <li><button class="d1" data-go="space"><span class="ico i-model"></span>LastStation</button></li>
-        <li><button class="d2" data-go="code"><span class="ico i-module"></span>RoundManager</button></li>
+        <li><button class="d2" data-go="space"><span class="ico i-module"></span>RoundManager</button></li>
         <li><button class="d2" data-go="space"><span class="ico i-module"></span>GameConfig</button></li>
-        <li><button class="d2" data-go="space"><span class="ico i-module"></span>Monetization</button></li>
+        <li><button class="d2" data-go="code"><span class="ico i-module"></span>Monetization</button></li>
         <li><button class="d1" data-go="dream"><span class="ico i-model"></span>DreamFlight</button></li>
         <li><button class="d2" data-go="dream"><span class="ico i-module"></span>TrackGenerator</button></li>
         <li><button class="d1" data-go="spiky"><span class="ico i-model"></span>SpikyPals</button></li>
@@ -205,7 +205,8 @@
         <p class="status">Опубликована на Roblox. Кооп-выживание: игроки вылетают со станции, добывают ресурсы и не дают ей обесточиться. Вся техническая часть моя.</p>
         <ul>
           <li>Матч на машине состояний RoundManager: экспедиция → тревога → оборона</li>
-          <li>Сервер решает всё: каждое действие клиента проверяется на сервере</li>
+          <li>Сервер решает всё: каждое действие клиента проверяется на сервере, стыковку со станцией тоже засчитывает сервер</li>
+          <li>Работает на телефонах: тач-управление и интерфейс, который подстраивается под экран</li>
           <li>Баланс в одном модуле GameConfig, все RemoteEvents в одном модуле Remotes</li>
           <li>Данные разделены на матч (RunState) и долгий прогресс (MetaProfile) на ProfileStore с блокировкой сессии</li>
           <li>Монетизация: Game Pass и Developer Product через единый ProcessReceipt, одна покупка не выдаётся дважды</li>
@@ -230,7 +231,7 @@
           <li>Стиль детского рисунка: «бумажное» небо, комиксная обводка через пул Highlight (в Roblox их максимум 31), интерфейс как ASCII-терминал</li>
           <li>Английский и русский: все тексты в одном модуле, шрифты подбираются под язык</li>
           <li>Аналитика через AnalyticsService: воронка новичка, прогрессия этапов, экономика</li>
-          <li>Делал с AI-агентами: я писал ТЗ и задания, Gemini писал код, Claude Code проверял и тестировал в Studio через MCP</li>
+          <li>Моя роль в работе с AI: писал ТЗ, ставил задачи AI-агентам (Gemini, Claude Code), ревьюил их код и тестировал игру в Studio через MCP</li>
         </ul>
         <p class="stack">Typed Luau, Rojo, DataStore, AnalyticsService, Studio MCP, Claude Code, Gemini, Git</p>
         <p><a href="https://www.roblox.com/games/128047347039665/Doodle-Dream-Flight">Играть на Roblox</a></p>
@@ -317,69 +318,82 @@
 
   <section id="code">
     <h2>Пример кода</h2>
-    <p class="status">Упрощённый пример: так устроены раунды в Last Station. Состояния меняются только по разрешённым переходам, клиенты узнают о смене через один RemoteEvent, а все цифры берутся из GameConfig.</p>
+    <p class="status">Упрощённый кусок настоящего модуля Monetization из Last Station. Покупка не выдаётся дважды: PurchaseId хранится в профиле игрока (ProfileStore). PurchaseId записывается в профиль раньше, чем Roblox получает подтверждение. Если выдать нельзя или что-то сломалось, Roblox повторит чек позже.</p>
 <pre><code><span class="com">--!strict</span>
-<span class="com">-- RoundManager: раунды как машина состояний</span>
+<span class="com">-- Monetization (упрощённо). ЕДИНСТВЕННОЕ место, где задаётся ProcessReceipt.</span>
+<span class="com">-- PurchaseId пишется в профиль (ProfileStore), чтобы одна покупка не выдалась дважды.</span>
+<span class="kw">local</span> MarketplaceService = game:GetService(<span class="str">"MarketplaceService"</span>)
 <span class="kw">local</span> Players = game:GetService(<span class="str">"Players"</span>)
-<span class="kw">local</span> ReplicatedStorage = game:GetService(<span class="str">"ReplicatedStorage"</span>)
 
-<span class="kw">local</span> GameConfig = require(ReplicatedStorage.Shared.GameConfig)
-<span class="kw">local</span> Remotes = require(ReplicatedStorage.Shared.Remotes)
+<span class="kw">local</span> CFG = GameConfig.Monetization
 
-<span class="kw">export</span> <span class="kw">type</span> State = <span class="str">"Waiting"</span> | <span class="str">"Playing"</span> | <span class="str">"Ended"</span>
+<span class="com">-- Выдача товара. true — выдано, false — выдать нельзя сейчас (Roblox повторит позже).</span>
+<span class="kw">type</span> ProductHandler = (player: Player) -&gt; boolean
 
-<span class="com">-- Из какого состояния в какое можно перейти. Остальные переходы запрещены</span>
-<span class="kw">local</span> TRANSITIONS: { [State]: { [State]: boolean } } = {
-    Waiting = { Playing = <span class="kw">true</span> },
-    Playing = { Ended = <span class="kw">true</span> },
-    Ended = { Waiting = <span class="kw">true</span> },
+<span class="com">-- grantEmergencyBattery: вне матча возвращает false, иначе добавляет станции энергию</span>
+<span class="kw">local</span> productHandlers: { [number]: ProductHandler } = {
+    [CFG.Products.EmergencyBattery.id] = grantEmergencyBattery,
 }
 
-<span class="kw">local</span> RoundManager = {}
-<span class="kw">local</span> current: State = <span class="str">"Waiting"</span>
-
-<span class="kw">function</span> RoundManager.GetState(): State
-    <span class="kw">return</span> current
-<span class="kw">end</span>
-
-<span class="kw">function</span> RoundManager.SetState(nextState: State)
-    <span class="kw">if</span> <span class="kw">not</span> TRANSITIONS[current][nextState] <span class="kw">then</span>
-        warn(<span class="str">`RoundManager: нельзя перейти {current} -&gt; {nextState}`</span>)
-        <span class="kw">return</span>
-    <span class="kw">end</span>
-    print(<span class="str">`RoundManager: {current} -&gt; {nextState}`</span>)
-    current = nextState
-    Remotes.RoundState:FireAllClients(nextState)
-<span class="kw">end</span>
-
-<span class="com">-- Главный цикл: ждём игроков, играем раунд, показываем итоги</span>
-<span class="kw">function</span> RoundManager.Run()
-    <span class="kw">while</span> <span class="kw">true</span> <span class="kw">do</span>
-        <span class="kw">repeat</span> task.wait(1) <span class="kw">until</span> #Players:GetPlayers() &gt;= GameConfig.MinPlayers
-
-        RoundManager.SetState(<span class="str">"Playing"</span>)
-        task.wait(GameConfig.RoundLength)
-
-        RoundManager.SetState(<span class="str">"Ended"</span>)
-        task.wait(GameConfig.IntermissionLength)
-
-        RoundManager.SetState(<span class="str">"Waiting"</span>)
+<span class="kw">local</span> <span class="kw">function</span> rememberPurchase(purchaseIds: { string }, purchaseId: string)
+    table.insert(purchaseIds, purchaseId)
+    <span class="kw">while</span> #purchaseIds &gt; CFG.maxStoredPurchaseIds <span class="kw">do</span>
+        table.remove(purchaseIds, 1)
     <span class="kw">end</span>
 <span class="kw">end</span>
 
-<span class="kw">return</span> RoundManager</code></pre>
+<span class="kw">local</span> <span class="kw">function</span> processReceipt(receipt: { [string]: any }): Enum.ProductPurchaseDecision
+    <span class="kw">local</span> player = Players:GetPlayerByUserId(receipt.PlayerId)
+    <span class="kw">if</span> <span class="kw">not</span> player <span class="kw">then</span>
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+
+    <span class="kw">local</span> profile = MetaProfile.getProfile(player)
+    <span class="kw">if</span> <span class="kw">not</span> profile <span class="kw">or</span> <span class="kw">not</span> profile:IsActive() <span class="kw">then</span>
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+
+    <span class="kw">local</span> purchaseIds: { string } = profile.Data.PurchaseIds
+    <span class="kw">local</span> purchaseId: string = receipt.PurchaseId
+
+    <span class="com">-- Уже выдавали — просто подтверждаем</span>
+    <span class="kw">if</span> table.find(purchaseIds, purchaseId) <span class="kw">then</span>
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.PurchaseGranted
+    <span class="kw">end</span>
+
+    <span class="kw">local</span> handler = productHandlers[receipt.ProductId]
+    <span class="kw">if</span> <span class="kw">not</span> handler <span class="kw">then</span>
+        warn(<span class="str">`[Monetization] неизвестный товар {receipt.ProductId}`</span>)
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+
+    <span class="kw">local</span> ok, granted = pcall(handler, player)
+    <span class="kw">if</span> <span class="kw">not</span> ok <span class="kw">then</span>
+        warn(<span class="str">`[Monetization] ошибка выдачи {receipt.ProductId} для {player.Name}: {granted}`</span>)
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+    <span class="kw">if</span> <span class="kw">not</span> granted <span class="kw">then</span>
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+
+    <span class="com">-- Сначала запоминаем покупку в профиле, потом подтверждаем Roblox</span>
+    rememberPurchase(purchaseIds, purchaseId)
+    <span class="kw">return</span> Enum.ProductPurchaseDecision.PurchaseGranted
+<span class="kw">end</span>
+
+MarketplaceService.ProcessReceipt = processReceipt</code></pre>
     <div class="output">
-      <div class="explorer-head">Output</div>
-      <ol class="log" id="log" aria-label="Output"></ol>
+      <div class="explorer-head">Что вернёт ProcessReceipt</div>
+      <ol class="log" id="log" aria-label="Что вернёт ProcessReceipt"></ol>
     </div>
   </section>
 
   <section id="skills">
     <h2>Навыки</h2>
     <div class="skills">
-      <div><h3>Roblox</h3><p>Typed Luau (<code>--!strict</code>), ModuleScripts, RemoteEvents, DataStore, GUI из скриптов</p></div>
+      <div><h3>Roblox</h3><p>Typed Luau (<code>--!strict</code>), ModuleScripts, RemoteEvents, DataStore, ProfileStore, MarketplaceService, AnalyticsService, GUI из скриптов, Rojo, luau-lsp</p></div>
       <div><h3>Другие движки</h3><p>Unity (C#), Godot, GDevelop</p></div>
-      <div><h3>AI-инструменты</h3><p>Claude Code: пишу, проверяю и выкладываю код вместе с AI. Этот сайт сделан так же.</p></div>
+      <div><h3>AI-инструменты</h3><p>Claude Code, Gemini, Studio MCP: пишу ТЗ, ставлю задачи AI-агентам, проверяю их код и тестирую в Studio. Этот сайт сделан так же.</p></div>
       <div><h3>Ещё</h3><p>Python, React, Firebase, Flutter, Git, GitHub Pages</p></div>
     </div>
   </section>
@@ -408,7 +422,7 @@
     <h2>Контакты</h2>
     <div class="btns">
       <a class="btn main" href="https://t.me/dj32j32j">Telegram</a>
-      <a class="btn" href="https://www.instagram.com/dj32j/">Instagram</a>
+      <a class="btn" href="mailto:ivan.denisov.dev@outlook.com">ivan.denisov.dev@outlook.com</a>
     </div>
   </footer>
 
@@ -506,7 +520,7 @@
     "Contacts": {
       "ClassName": "Script",
       "Telegram": "@dj32j32j",
-      "Instagram": "dj32j",
+      "Email": "ivan.denisov.dev@outlook.com",
       "OpenToWork": true
     }
   };
@@ -532,24 +546,22 @@
   showProps('Workspace');
 
   // Output: print what RoundManager would log when the code scrolls into view
-  var LOG = [["info", "RoundManager: Waiting -> Playing", "RoundManager:30"], ["info", "RoundManager: Playing -> Ended", "RoundManager:30"], ["warn", "RoundManager: нельзя перейти Ended -> Playing", "RoundManager:27"], ["info", "RoundManager: Ended -> Waiting", "RoundManager:30"]];
+  var LOG = [["ok", "Новый чек: батарея выдана, PurchaseId записан в профиль", "PurchaseGranted"], ["ok", "Тот же чек ещё раз: PurchaseId уже в профиле, второй раз не выдаём", "PurchaseGranted"], ["warn", "Матч не идёт: батарею выдать некуда", "NotProcessedYet, Roblox повторит"], ["warn", "Профиль игрока ещё не загружен", "NotProcessedYet"]];
   var logEl = document.getElementById('log');
   function pad(n, w) { return String(n).padStart(w || 2, '0'); }
-  function addLine(item, t) {
+  function addLine(item) {
     var li = document.createElement('li');
     if (item[0] === 'warn') li.className = 'warn';
-    var ts = document.createElement('span'); ts.className = 'ts';
-    ts.textContent = pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds()) + '.' + pad(t.getMilliseconds(), 3) + '  ';
-    var src = document.createElement('span'); src.className = 'src'; src.textContent = '  -  Server - ' + item[2];
-    li.appendChild(ts); li.appendChild(document.createTextNode(item[1])); li.appendChild(src);
+    var src = document.createElement('span'); src.className = 'src'; src.textContent = '  →  ' + item[2];
+    li.appendChild(document.createTextNode(item[1])); li.appendChild(src);
     logEl.appendChild(li);
   }
   function runLog() {
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var t = Date.now();
     LOG.forEach(function (item, i) {
-      if (still) addLine(item, new Date(t + i * 1500));
-      else setTimeout(function () { addLine(item, new Date()); }, 400 + i * 900);
+      if (still) addLine(item);
+      else setTimeout(function () { addLine(item); }, 400 + i * 900);
     });
   }
   if ('IntersectionObserver' in window) {

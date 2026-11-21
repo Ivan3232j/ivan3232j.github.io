@@ -119,8 +119,8 @@
 
   /* Output window */
   .output { margin-top: 12px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px; }
-  .log { list-style: none; margin: 0; padding: 10px 16px; min-height: 7.5em; font: 13px/1.7 "JetBrains Mono", monospace; overflow-x: auto; }
-  .log li { white-space: nowrap; }
+  .log { list-style: none; margin: 0; padding: 10px 16px; min-height: 9em; font: 13px/1.7 "JetBrains Mono", monospace; overflow-x: auto; }
+  .log li { margin-bottom: 4px; }
   .log .ts, .log .src { color: var(--muted); }
   .log .warn { color: var(--warn); }
 
@@ -173,9 +173,9 @@
       <ul class="tree">
         <li><button data-go="projects"><span class="ico i-folder"></span>Workspace</button></li>
         <li><button class="d1" data-go="space"><span class="ico i-model"></span>LastStation</button></li>
-        <li><button class="d2" data-go="code"><span class="ico i-module"></span>RoundManager</button></li>
+        <li><button class="d2" data-go="space"><span class="ico i-module"></span>RoundManager</button></li>
         <li><button class="d2" data-go="space"><span class="ico i-module"></span>GameConfig</button></li>
-        <li><button class="d2" data-go="space"><span class="ico i-module"></span>Monetization</button></li>
+        <li><button class="d2" data-go="code"><span class="ico i-module"></span>Monetization</button></li>
         <li><button class="d1" data-go="dream"><span class="ico i-model"></span>DreamFlight</button></li>
         <li><button class="d2" data-go="dream"><span class="ico i-module"></span>TrackGenerator</button></li>
         <li><button class="d1" data-go="spiky"><span class="ico i-model"></span>SpikyPals</button></li>
@@ -204,7 +204,8 @@
         <p class="status">Live on Roblox. Co-op survival: players launch from the station, mine resources and keep it from losing power. All the technical work is mine.</p>
         <ul>
           <li>Match flow as a RoundManager state machine: Expedition → Alert → Defense</li>
-          <li>Server-authoritative: every client action is validated on the server</li>
+          <li>Server-authoritative: every client action is validated on the server, including docking at the station</li>
+          <li>Runs on phones: touch controls and a UI that adapts to the screen</li>
           <li>Balance in a single GameConfig module, all RemoteEvents in a single Remotes module</li>
           <li>Data split into per-match (RunState) and long-term progress (MetaProfile) on ProfileStore with session locking</li>
           <li>Monetization: Game Passes and a Developer Product through a single ProcessReceipt; a purchase is never granted twice</li>
@@ -229,7 +230,7 @@
           <li>Crayon-drawing look: paper sky, comic ink outlines from a pooled set of Highlights (Roblox draws at most 31), ASCII-terminal HUD</li>
           <li>English and Russian: all text in one module, fonts picked per language</li>
           <li>Analytics with AnalyticsService: onboarding funnel, stage progression, economy</li>
-          <li>Built with AI agents: I wrote the spec and task briefs, Gemini wrote code, Claude Code reviewed and tested it in Studio via MCP</li>
+          <li>My role working with AI: I wrote the spec, assigned tasks to AI agents (Gemini, Claude Code), reviewed their code and tested the game in Studio via MCP</li>
         </ul>
         <p class="stack">Typed Luau, Rojo, DataStore, AnalyticsService, Studio MCP, Claude Code, Gemini, Git</p>
         <p><a href="https://www.roblox.com/games/128047347039665/Doodle-Dream-Flight">Play on Roblox</a></p>
@@ -316,69 +317,82 @@
 
   <section id="code">
     <h2>Code sample</h2>
-    <p class="status">A simplified example of how rounds work in Last Station. State changes only follow allowed transitions, clients learn about them through a single RemoteEvent, and all numbers come from GameConfig.</p>
+    <p class="status">A simplified excerpt of the real Monetization module from Last Station. A purchase is never granted twice: the PurchaseId is stored in the player profile (ProfileStore). The PurchaseId is written to the profile before Roblox gets the confirmation. If the item can’t be granted or something fails, Roblox retries the receipt later.</p>
 <pre><code><span class="com">--!strict</span>
-<span class="com">-- RoundManager: rounds as a state machine</span>
+<span class="com">-- Monetization (simplified). The ONLY place where ProcessReceipt is set.</span>
+<span class="com">-- The PurchaseId goes into the profile (ProfileStore) so a purchase is never granted twice.</span>
+<span class="kw">local</span> MarketplaceService = game:GetService(<span class="str">"MarketplaceService"</span>)
 <span class="kw">local</span> Players = game:GetService(<span class="str">"Players"</span>)
-<span class="kw">local</span> ReplicatedStorage = game:GetService(<span class="str">"ReplicatedStorage"</span>)
 
-<span class="kw">local</span> GameConfig = require(ReplicatedStorage.Shared.GameConfig)
-<span class="kw">local</span> Remotes = require(ReplicatedStorage.Shared.Remotes)
+<span class="kw">local</span> CFG = GameConfig.Monetization
 
-<span class="kw">export</span> <span class="kw">type</span> State = <span class="str">"Waiting"</span> | <span class="str">"Playing"</span> | <span class="str">"Ended"</span>
+<span class="com">-- Grants a product. true = granted, false = can’t grant now (Roblox will retry later).</span>
+<span class="kw">type</span> ProductHandler = (player: Player) -&gt; boolean
 
-<span class="com">-- Which state can go to which. Any other transition is rejected</span>
-<span class="kw">local</span> TRANSITIONS: { [State]: { [State]: boolean } } = {
-    Waiting = { Playing = <span class="kw">true</span> },
-    Playing = { Ended = <span class="kw">true</span> },
-    Ended = { Waiting = <span class="kw">true</span> },
+<span class="com">-- grantEmergencyBattery: returns false outside a match, otherwise adds station power</span>
+<span class="kw">local</span> productHandlers: { [number]: ProductHandler } = {
+    [CFG.Products.EmergencyBattery.id] = grantEmergencyBattery,
 }
 
-<span class="kw">local</span> RoundManager = {}
-<span class="kw">local</span> current: State = <span class="str">"Waiting"</span>
-
-<span class="kw">function</span> RoundManager.GetState(): State
-    <span class="kw">return</span> current
-<span class="kw">end</span>
-
-<span class="kw">function</span> RoundManager.SetState(nextState: State)
-    <span class="kw">if</span> <span class="kw">not</span> TRANSITIONS[current][nextState] <span class="kw">then</span>
-        warn(<span class="str">`RoundManager: invalid transition {current} -&gt; {nextState}`</span>)
-        <span class="kw">return</span>
-    <span class="kw">end</span>
-    print(<span class="str">`RoundManager: {current} -&gt; {nextState}`</span>)
-    current = nextState
-    Remotes.RoundState:FireAllClients(nextState)
-<span class="kw">end</span>
-
-<span class="com">-- Main loop: wait for players, play the round, show results</span>
-<span class="kw">function</span> RoundManager.Run()
-    <span class="kw">while</span> <span class="kw">true</span> <span class="kw">do</span>
-        <span class="kw">repeat</span> task.wait(1) <span class="kw">until</span> #Players:GetPlayers() &gt;= GameConfig.MinPlayers
-
-        RoundManager.SetState(<span class="str">"Playing"</span>)
-        task.wait(GameConfig.RoundLength)
-
-        RoundManager.SetState(<span class="str">"Ended"</span>)
-        task.wait(GameConfig.IntermissionLength)
-
-        RoundManager.SetState(<span class="str">"Waiting"</span>)
+<span class="kw">local</span> <span class="kw">function</span> rememberPurchase(purchaseIds: { string }, purchaseId: string)
+    table.insert(purchaseIds, purchaseId)
+    <span class="kw">while</span> #purchaseIds &gt; CFG.maxStoredPurchaseIds <span class="kw">do</span>
+        table.remove(purchaseIds, 1)
     <span class="kw">end</span>
 <span class="kw">end</span>
 
-<span class="kw">return</span> RoundManager</code></pre>
+<span class="kw">local</span> <span class="kw">function</span> processReceipt(receipt: { [string]: any }): Enum.ProductPurchaseDecision
+    <span class="kw">local</span> player = Players:GetPlayerByUserId(receipt.PlayerId)
+    <span class="kw">if</span> <span class="kw">not</span> player <span class="kw">then</span>
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+
+    <span class="kw">local</span> profile = MetaProfile.getProfile(player)
+    <span class="kw">if</span> <span class="kw">not</span> profile <span class="kw">or</span> <span class="kw">not</span> profile:IsActive() <span class="kw">then</span>
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+
+    <span class="kw">local</span> purchaseIds: { string } = profile.Data.PurchaseIds
+    <span class="kw">local</span> purchaseId: string = receipt.PurchaseId
+
+    <span class="com">-- Already granted: just confirm</span>
+    <span class="kw">if</span> table.find(purchaseIds, purchaseId) <span class="kw">then</span>
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.PurchaseGranted
+    <span class="kw">end</span>
+
+    <span class="kw">local</span> handler = productHandlers[receipt.ProductId]
+    <span class="kw">if</span> <span class="kw">not</span> handler <span class="kw">then</span>
+        warn(<span class="str">`[Monetization] unknown product {receipt.ProductId}`</span>)
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+
+    <span class="kw">local</span> ok, granted = pcall(handler, player)
+    <span class="kw">if</span> <span class="kw">not</span> ok <span class="kw">then</span>
+        warn(<span class="str">`[Monetization] grant failed {receipt.ProductId} for {player.Name}: {granted}`</span>)
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+    <span class="kw">if</span> <span class="kw">not</span> granted <span class="kw">then</span>
+        <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
+    <span class="kw">end</span>
+
+    <span class="com">-- Remember the purchase in the profile first, then confirm to Roblox</span>
+    rememberPurchase(purchaseIds, purchaseId)
+    <span class="kw">return</span> Enum.ProductPurchaseDecision.PurchaseGranted
+<span class="kw">end</span>
+
+MarketplaceService.ProcessReceipt = processReceipt</code></pre>
     <div class="output">
-      <div class="explorer-head">Output</div>
-      <ol class="log" id="log" aria-label="Output"></ol>
+      <div class="explorer-head">What ProcessReceipt returns</div>
+      <ol class="log" id="log" aria-label="What ProcessReceipt returns"></ol>
     </div>
   </section>
 
   <section id="skills">
     <h2>Skills</h2>
     <div class="skills">
-      <div><h3>Roblox</h3><p>Typed Luau (<code>--!strict</code>), ModuleScripts, RemoteEvents, DataStore, GUI built from scripts</p></div>
+      <div><h3>Roblox</h3><p>Typed Luau (<code>--!strict</code>), ModuleScripts, RemoteEvents, DataStore, ProfileStore, MarketplaceService, AnalyticsService, GUI built from scripts, Rojo, luau-lsp</p></div>
       <div><h3>Other engines</h3><p>Unity (C#), Godot, GDevelop</p></div>
-      <div><h3>AI tools</h3><p>Claude Code: I write, review and ship code together with AI. This site was built the same way.</p></div>
+      <div><h3>AI tools</h3><p>Claude Code, Gemini, Studio MCP: I write specs, assign tasks to AI agents, review their code and test in Studio. This site was built the same way.</p></div>
       <div><h3>Also</h3><p>Python, React, Firebase, Flutter, Git, GitHub Pages</p></div>
     </div>
   </section>
@@ -407,7 +421,7 @@
     <h2>Contacts</h2>
     <div class="btns">
       <a class="btn main" href="https://t.me/dj32j32j">Telegram</a>
-      <a class="btn" href="https://www.instagram.com/dj32j/">Instagram</a>
+      <a class="btn" href="mailto:ivan.denisov.dev@outlook.com">ivan.denisov.dev@outlook.com</a>
     </div>
   </footer>
 
@@ -505,7 +519,7 @@
     "Contacts": {
       "ClassName": "Script",
       "Telegram": "@dj32j32j",
-      "Instagram": "dj32j",
+      "Email": "ivan.denisov.dev@outlook.com",
       "OpenToWork": true
     }
   };
@@ -531,24 +545,22 @@
   showProps('Workspace');
 
   // Output: print what RoundManager would log when the code scrolls into view
-  var LOG = [["info", "RoundManager: Waiting -> Playing", "RoundManager:30"], ["info", "RoundManager: Playing -> Ended", "RoundManager:30"], ["warn", "RoundManager: invalid transition Ended -> Playing", "RoundManager:27"], ["info", "RoundManager: Ended -> Waiting", "RoundManager:30"]];
+  var LOG = [["ok", "New receipt: battery granted, PurchaseId written to the profile", "PurchaseGranted"], ["ok", "Same receipt again: PurchaseId is already in the profile, not granted twice", "PurchaseGranted"], ["warn", "No match running: nowhere to put the battery", "NotProcessedYet, Roblox retries"], ["warn", "Player profile not loaded yet", "NotProcessedYet"]];
   var logEl = document.getElementById('log');
   function pad(n, w) { return String(n).padStart(w || 2, '0'); }
-  function addLine(item, t) {
+  function addLine(item) {
     var li = document.createElement('li');
     if (item[0] === 'warn') li.className = 'warn';
-    var ts = document.createElement('span'); ts.className = 'ts';
-    ts.textContent = pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds()) + '.' + pad(t.getMilliseconds(), 3) + '  ';
-    var src = document.createElement('span'); src.className = 'src'; src.textContent = '  -  Server - ' + item[2];
-    li.appendChild(ts); li.appendChild(document.createTextNode(item[1])); li.appendChild(src);
+    var src = document.createElement('span'); src.className = 'src'; src.textContent = '  →  ' + item[2];
+    li.appendChild(document.createTextNode(item[1])); li.appendChild(src);
     logEl.appendChild(li);
   }
   function runLog() {
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var t = Date.now();
     LOG.forEach(function (item, i) {
-      if (still) addLine(item, new Date(t + i * 1500));
-      else setTimeout(function () { addLine(item, new Date()); }, 400 + i * 900);
+      if (still) addLine(item);
+      else setTimeout(function () { addLine(item); }, 400 + i * 900);
     });
   }
   if ('IntersectionObserver' in window) {
