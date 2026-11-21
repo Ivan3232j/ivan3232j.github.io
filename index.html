@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Иван — Roblox-разработчик</title>
+<title>Ivan — Roblox Developer</title>
+<link rel="alternate" hreflang="en" href="https://ivan3232j.github.io/">
+<link rel="alternate" hreflang="ru" href="https://ivan3232j.github.io/ru/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -153,23 +155,22 @@
 </head>
 <body>
 <div class="wrap">
-  <a class="lang" href="en/" hreflang="en">English</a>
+  <a class="lang" href="ru/" hreflang="ru">Русский</a>
 
   <header class="hero">
     <div>
-      <h1>Иван</h1>
-      <p class="lead">Roblox-разработчик. Пишу на Luau игровые системы: раунды, сохранения, сетевое взаимодействие. Делаю свои игры и учу детей делать свои.</p>
+      <h1>Ivan</h1>
+      <p class="lead">Roblox developer. I write gameplay systems in Luau: rounds, saving, networking. I build my own games and teach kids to build theirs.</p>
       <div class="btns">
-        <!-- ЗАМЕНИ ссылки на свои -->
-        <a class="btn main" href="https://t.me/dj32j32j">Написать в Telegram</a>
-        <a class="btn" href="https://www.roblox.com/users/6083151448/profile">Профиль Roblox</a>
+        <a class="btn main" href="https://t.me/dj32j32j">Message on Telegram</a>
+        <a class="btn" href="https://www.roblox.com/users/6083151448/profile">Roblox profile</a>
         <a class="btn" href="https://github.com/ivan3232j">GitHub</a>
       </div>
     </div>
 
-    <!-- Панель в стиле Explorer из Roblox Studio: клик ведёт к разделу -->
+    <!-- Roblox Studio Explorer-style panel: click jumps to a section -->
     <div class="side">
-    <nav class="explorer" aria-label="Навигация по сайту">
+    <nav class="explorer" aria-label="Site navigation">
       <div class="explorer-head">Explorer</div>
       <ul class="tree">
         <li><button data-go="projects"><span class="ico i-folder"></span>Workspace</button></li>
@@ -196,90 +197,90 @@
   </header>
 
   <section id="projects">
-    <h2>Проекты</h2>
+    <h2>Projects</h2>
 
     <article class="proj" id="space">
-      <div class="shot"><img src="img/space.gif" alt="Геймплей Last Station: Space Miners" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div class="shot"><img src="img/space.gif" alt="Last Station: Space Miners gameplay" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Last Station: Space Miners</h3>
-        <p class="status">Опубликована на Roblox. Кооп-выживание: игроки вылетают со станции, добывают ресурсы и не дают ей обесточиться. Вся техническая часть моя.</p>
+        <p class="status">Live on Roblox. Co-op survival: players launch from the station, mine resources and keep it from losing power. All the technical work is mine.</p>
         <ul>
-          <li>Матч на машине состояний RoundManager: экспедиция → тревога → оборона</li>
-          <li>Сервер решает всё: каждое действие клиента проверяется на сервере, стыковку со станцией тоже засчитывает сервер</li>
-          <li>Работает на телефонах: тач-управление и интерфейс, который подстраивается под экран</li>
-          <li>Баланс в одном модуле GameConfig, все RemoteEvents в одном модуле Remotes</li>
-          <li>Данные разделены на матч (RunState) и долгий прогресс (MetaProfile) на ProfileStore с блокировкой сессии</li>
-          <li>Монетизация: Game Pass и Developer Product через единый ProcessReceipt, одна покупка не выдаётся дважды</li>
-          <li>Аналитика через AnalyticsService: воронка новичка и экономика</li>
-          <li>Опасности: астероиды, радиация, солнечные вспышки; устаревший BodyGyro заменил на AlignOrientation</li>
+          <li>Match flow as a RoundManager state machine: Expedition → Alert → Defense</li>
+          <li>Server-authoritative: every client action is validated on the server, including docking at the station</li>
+          <li>Runs on phones: touch controls and a UI that adapts to the screen</li>
+          <li>Balance in a single GameConfig module, all RemoteEvents in a single Remotes module</li>
+          <li>Data split into per-match (RunState) and long-term progress (MetaProfile) on ProfileStore with session locking</li>
+          <li>Monetization: Game Passes and a Developer Product through a single ProcessReceipt; a purchase is never granted twice</li>
+          <li>Analytics with AnalyticsService: onboarding funnel and economy</li>
+          <li>Hazards: asteroids, radiation, solar flares; replaced deprecated BodyGyro with AlignOrientation</li>
         </ul>
         <p class="stack">Typed Luau, ProfileStore, MarketplaceService, AnalyticsService, Rojo, Git</p>
-        <p><a href="https://www.roblox.com/games/113738775535567/Last-Station-Space-Miners">Играть на Roblox</a></p>
+        <p><a href="https://www.roblox.com/games/113738775535567/Last-Station-Space-Miners">Play on Roblox</a></p>
       </div>
     </article>
 
     <article class="proj" id="dream">
-      <div class="shot"><img src="img/dream.gif" alt="Геймплей Doodle Dream Flight: кольца, трюк, влёт в пасть монстра и буст" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div class="shot"><img src="img/dream.gif" alt="Doodle Dream Flight gameplay: rings, a trick, slipping into a monster mouth and a boost" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Doodle Dream Flight ✏️</h3>
-        <p class="status">Опубликована на Roblox. Полёт во сне по миру детских рисунков: пролетаешь кольца, проскакиваешь в пасти монстров, делаешь трюки и собираешь комбо.</p>
+        <p class="status">Live on Roblox. A dream flight through a world of kids' crayon drawings: fly through rings, slip into snapping monster mouths, pull off tricks and chain combos.</p>
         <ul>
-          <li>Трассы строит генератор по seed, валидатор проверяет проходимость: тест прогоняет 60 трасс, сложность растёт от этапа к этапу</li>
-          <li>Полёт: камера смотрит точно в прицел, а тело мягко догоняет; мышь, свайп или стик, буст с перезарядкой</li>
-          <li>Пасти монстров открываются по общему серверному времени, сервер проверяет пролёт с допуском на пинг</li>
-          <li>Сервер считает очки и комбо, проверяет скорость (античит) и не даёт фармить трюки</li>
-          <li>Стиль детского рисунка: «бумажное» небо, комиксная обводка через пул Highlight (в Roblox их максимум 31), интерфейс как ASCII-терминал</li>
-          <li>Английский и русский: все тексты в одном модуле, шрифты подбираются под язык</li>
-          <li>Аналитика через AnalyticsService: воронка новичка, прогрессия этапов, экономика</li>
-          <li>Моя роль в работе с AI: писал ТЗ, ставил задачи AI-агентам (Gemini, Claude Code), ревьюил их код и тестировал игру в Studio через MCP</li>
+          <li>Courses come from a seeded generator and a validator checks they're beatable: the test runs 60 tracks, difficulty rises stage by stage</li>
+          <li>Flight: the camera looks exactly where you aim while the body glides after it; mouse, swipe or stick, boost with a recharge</li>
+          <li>Monster mouths open and close on the shared server clock; the server checks each pass with a lag allowance</li>
+          <li>Server-authoritative score and combo, speed checks (anti-cheat) and a cap on trick farming</li>
+          <li>Crayon-drawing look: paper sky, comic ink outlines from a pooled set of Highlights (Roblox draws at most 31), ASCII-terminal HUD</li>
+          <li>English and Russian: all text in one module, fonts picked per language</li>
+          <li>Analytics with AnalyticsService: onboarding funnel, stage progression, economy</li>
+          <li>My role working with AI: I wrote the spec, assigned tasks to AI agents (Gemini, Claude Code), reviewed their code and tested the game in Studio via MCP</li>
         </ul>
         <p class="stack">Typed Luau, Rojo, DataStore, AnalyticsService, Studio MCP, Claude Code, Gemini, Git</p>
-        <p><a href="https://www.roblox.com/games/128047347039665/Doodle-Dream-Flight">Играть на Roblox</a></p>
+        <p><a href="https://www.roblox.com/games/128047347039665/Doodle-Dream-Flight">Play on Roblox</a></p>
       </div>
     </article>
 
     <article class="proj" id="spiky">
-      <div class="shot"><img src="img/spiky.gif" alt="Spiky Pals: питомец в доме" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div class="shot"><img src="img/spiky.gif" alt="Spiky Pals: a pet at home" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Spiky Pals</h3>
-        <p class="status">В разработке. Питомцы в духе Sims и тамагочи, стиль: чёрные колючие чиби.</p>
+        <p class="status">In development. Virtual pets inspired by The Sims and Tamagotchi, drawn as black spiky chibis.</p>
         <ul>
-          <li>Питомец живёт как персонаж Sims: сам ходит к мебели через PathfindingService, ест, спит, устаёт; еду можно приготовить или заказать</li>
-          <li>Работа через мини-игры: музыкант, программист, художник; результат проверяет сервер</li>
-          <li>Строительство дома по сетке: сервер проверяет место и списывает монеты, дом сохраняется целиком</li>
-          <li>Свой участок у каждого игрока, садоводство, характеры питомцев</li>
-          <li>Внешность питомца собирается из «генов» при первом входе</li>
+          <li>Pets live like Sims characters: they walk to furniture with PathfindingService, eat, sleep and get tired; food can be cooked or ordered</li>
+          <li>Jobs are mini-games (musician, programmer, artist); results are checked by the server</li>
+          <li>Grid-based house building: the server validates placement and charges coins, the whole house is saved</li>
+          <li>A plot for every player, gardening, pet personalities</li>
+          <li>Pet appearance is generated from "genes" on first join</li>
         </ul>
         <p class="stack">Typed Luau, ProfileStore, PathfindingService, AnalyticsService, Rojo</p>
       </div>
     </article>
 
     <article class="proj" id="bunker">
-      <div class="shot"><img src="img/bunker.gif" alt="Fluffy Bunker: жители носят ящики между комнатами" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div class="shot"><img src="img/bunker.gif" alt="Fluffy Bunker: dwellers carrying crates between rooms" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
         <h3>Fluffy Bunker</h3>
-        <p class="status">В разработке. Бункер в разрезе: комнаты работают как станки, а зверьки-жители сами носят ящики между ними, как живой конвейер.</p>
+        <p class="status">In development. A bunker in cross-section: rooms work as machines and animal dwellers carry crates between them like a living conveyor belt.</p>
         <ul>
-          <li>Экономика тепла: холод и оттепель, чем глубже этаж, тем теплее; котельные и торфяники</li>
-          <li>Баланс сначала проверяет отдельный скрипт-симулятор, потом он попадает в игру</li>
-          <li>Сохранение с блокировкой сессии, управление с телефона</li>
-          <li>Строгая типизация с проверкой через luau-lsp, тесты</li>
+          <li>Heat economy: Cold and Thaw seasons, deeper floors are warmer; boilers and peat pits</li>
+          <li>Balance is checked by a separate simulator script before it goes into the game</li>
+          <li>Saving with session locking, phone controls</li>
+          <li>Strict typing checked with luau-lsp, tests</li>
         </ul>
         <p class="stack">Typed Luau, luau-lsp, Rojo, Git</p>
       </div>
     </article>
 
     <article class="proj" id="course">
-      <div class="shot"><img src="img/course.gif" alt="Игра ученика из курса" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div class="shot"><img src="img/course.gif" alt="A student game from the course" loading="lazy" onerror="this.parentNode.remove()"></div>
       <div>
-        <h3>Мои курсы: Roblox, Python, Unity</h3>
-        <p class="status">Пишу курсы для детей сам: сюжет, код, презентации, методички.</p>
+        <h3>My courses: Roblox, Python, Unity</h3>
+        <p class="status">I write courses for kids myself: story, code, slides and teacher guides.</p>
         <ul>
-          <li><b>Roblox Studio</b>, 9–12 лет: 36 уроков по 90 минут, 6 модулей, от первой детали до своей игры</li>
-          <li><b>Unity 6</b>, 11–14 лет: 36 уроков, URP, сюжет про игровую студию; модули Tycoon и бесконечный раннер. Весь код проверен в Unity 6 (новый Input System)</li>
-          <li><b>Python</b>: tkinter и pygame для учеников, которые уже знают ООП</li>
-          <li>Интенсивы на каникулы: <b>Godot</b> (2D-арена за 5 дней), <b>GDevelop 5</b> (платформер, раннер, ритм-игра)</li>
-          <li>Проверяю на реальных группах и переделываю по итогам</li>
+          <li><b>Roblox Studio</b>, ages 9–12: 36 lessons of 90 minutes in 6 modules, from the first Part to a finished game</li>
+          <li><b>Unity 6</b>, ages 11–14: 36 lessons, URP, a story about a game studio; Tycoon and endless runner modules. All code tested in Unity 6 (new Input System)</li>
+          <li><b>Python</b>: tkinter and pygame for students who already know OOP</li>
+          <li>Holiday intensives: <b>Godot</b> (a 2D arena in 5 days), <b>GDevelop 5</b> (platformer, runner, rhythm game)</li>
+          <li>Tested with real classes and revised based on the results</li>
         </ul>
         <p class="stack">Luau, C#, Python, Godot, GDevelop, LEGO WeDo, Minecraft Education</p>
       </div>
@@ -287,50 +288,50 @@
   </section>
 
   <section id="other">
-    <h2>Другие проекты</h2>
+    <h2>Other projects</h2>
     <div class="others">
       <div>
-        <h3>Бумажная мастерская</h3>
-        <p>3D-фигурки из бумаги в браузере: раскрашиваешь модель или собираешь свою из деталей, сайт сам раскладывает её на листы A4 с линиями сгиба и клапанами для печати. Three.js, без сборки.</p>
-        <a href="https://ivan3232j.github.io/paper-work/">Открыть</a> · <a href="https://github.com/Ivan3232j/paper-work">Код</a>
+        <h3>Paper Workshop</h3>
+        <p>3D paper crafts in the browser: paint a model or build your own from parts, and the site unfolds it onto A4 sheets with fold lines and glue tabs, ready to print. Three.js, no build step.</p>
+        <a href="https://ivan3232j.github.io/paper-work/en/">Open</a> · <a href="https://github.com/Ivan3232j/paper-work">Code</a>
       </div>
       <div>
-        <h3>Образовательная платформа</h3>
-        <p>Блочное программирование: ведёшь ровер по лабиринту. React, Vite, Firebase.</p>
-        <a href="https://wsejhfbw.github.io/supreme-octo-happiness/">Демо</a> · <a href="https://github.com/wsejhfbw/supreme-octo-happiness">Код</a>
+        <h3>Learning platform</h3>
+        <p>Block-based coding: guide a rover through a maze. React, Vite, Firebase.</p>
+        <a href="https://wsejhfbw.github.io/supreme-octo-happiness/">Demo</a> · <a href="https://github.com/wsejhfbw/supreme-octo-happiness">Code</a>
       </div>
       <div>
-        <h3>Python Ровер · Станция</h3>
-        <p>Сайт для повторения тем по Python с интерпретатором прямо в браузере.</p>
-        <a href="https://ivan3232j.github.io/python-station-site/">Открыть</a>
+        <h3>Python Rover · Station</h3>
+        <p>A site for reviewing Python topics, with an interpreter right in the browser.</p>
+        <a href="https://ivan3232j.github.io/python-station-site/">Open</a>
       </div>
       <div>
-        <h3>Скрипты для курса Roblox</h3>
-        <p>Сайт с готовыми скриптами к урокам моего курса.</p>
-        <a href="https://ivan3232j.github.io/roblox-scripts/">Открыть</a>
+        <h3>Roblox course scripts</h3>
+        <p>A site with ready-made scripts for the lessons of my Roblox course.</p>
+        <a href="https://ivan3232j.github.io/roblox-scripts/">Open</a>
       </div>
       <div>
         <h3>dog_walker</h3>
-        <p>Мобильное приложение на Flutter: учёт прогулок с собакой и напоминания о лекарствах.</p>
+        <p>A Flutter mobile app for tracking dog walks and medication reminders.</p>
       </div>
     </div>
   </section>
 
   <section id="code">
-    <h2>Пример кода</h2>
-    <p class="status">Упрощённый кусок настоящего модуля Monetization из Last Station. Покупка не выдаётся дважды: PurchaseId хранится в профиле игрока (ProfileStore). PurchaseId записывается в профиль раньше, чем Roblox получает подтверждение. Если выдать нельзя или что-то сломалось, Roblox повторит чек позже.</p>
+    <h2>Code sample</h2>
+    <p class="status">A simplified excerpt of the real Monetization module from Last Station. A purchase is never granted twice: the PurchaseId is stored in the player profile (ProfileStore). The PurchaseId is written to the profile before Roblox gets the confirmation. If the item can’t be granted or something fails, Roblox retries the receipt later.</p>
 <pre><code><span class="com">--!strict</span>
-<span class="com">-- Monetization (упрощённо). ЕДИНСТВЕННОЕ место, где задаётся ProcessReceipt.</span>
-<span class="com">-- PurchaseId пишется в профиль (ProfileStore), чтобы одна покупка не выдалась дважды.</span>
+<span class="com">-- Monetization (simplified). The ONLY place where ProcessReceipt is set.</span>
+<span class="com">-- The PurchaseId goes into the profile (ProfileStore) so a purchase is never granted twice.</span>
 <span class="kw">local</span> MarketplaceService = game:GetService(<span class="str">"MarketplaceService"</span>)
 <span class="kw">local</span> Players = game:GetService(<span class="str">"Players"</span>)
 
 <span class="kw">local</span> CFG = GameConfig.Monetization
 
-<span class="com">-- Выдача товара. true — выдано, false — выдать нельзя сейчас (Roblox повторит позже).</span>
+<span class="com">-- Grants a product. true = granted, false = can’t grant now (Roblox will retry later).</span>
 <span class="kw">type</span> ProductHandler = (player: Player) -&gt; boolean
 
-<span class="com">-- grantEmergencyBattery: вне матча возвращает false, иначе добавляет станции энергию</span>
+<span class="com">-- grantEmergencyBattery: returns false outside a match, otherwise adds station power</span>
 <span class="kw">local</span> productHandlers: { [number]: ProductHandler } = {
     [CFG.Products.EmergencyBattery.id] = grantEmergencyBattery,
 }
@@ -356,70 +357,70 @@
     <span class="kw">local</span> purchaseIds: { string } = profile.Data.PurchaseIds
     <span class="kw">local</span> purchaseId: string = receipt.PurchaseId
 
-    <span class="com">-- Уже выдавали — просто подтверждаем</span>
+    <span class="com">-- Already granted: just confirm</span>
     <span class="kw">if</span> table.find(purchaseIds, purchaseId) <span class="kw">then</span>
         <span class="kw">return</span> Enum.ProductPurchaseDecision.PurchaseGranted
     <span class="kw">end</span>
 
     <span class="kw">local</span> handler = productHandlers[receipt.ProductId]
     <span class="kw">if</span> <span class="kw">not</span> handler <span class="kw">then</span>
-        warn(<span class="str">`[Monetization] неизвестный товар {receipt.ProductId}`</span>)
+        warn(<span class="str">`[Monetization] unknown product {receipt.ProductId}`</span>)
         <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
     <span class="kw">end</span>
 
     <span class="kw">local</span> ok, granted = pcall(handler, player)
     <span class="kw">if</span> <span class="kw">not</span> ok <span class="kw">then</span>
-        warn(<span class="str">`[Monetization] ошибка выдачи {receipt.ProductId} для {player.Name}: {granted}`</span>)
+        warn(<span class="str">`[Monetization] grant failed {receipt.ProductId} for {player.Name}: {granted}`</span>)
         <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
     <span class="kw">end</span>
     <span class="kw">if</span> <span class="kw">not</span> granted <span class="kw">then</span>
         <span class="kw">return</span> Enum.ProductPurchaseDecision.NotProcessedYet
     <span class="kw">end</span>
 
-    <span class="com">-- Сначала запоминаем покупку в профиле, потом подтверждаем Roblox</span>
+    <span class="com">-- Remember the purchase in the profile first, then confirm to Roblox</span>
     rememberPurchase(purchaseIds, purchaseId)
     <span class="kw">return</span> Enum.ProductPurchaseDecision.PurchaseGranted
 <span class="kw">end</span>
 
 MarketplaceService.ProcessReceipt = processReceipt</code></pre>
     <div class="output">
-      <div class="explorer-head">Что вернёт ProcessReceipt</div>
-      <ol class="log" id="log" aria-label="Что вернёт ProcessReceipt"></ol>
+      <div class="explorer-head">What ProcessReceipt returns</div>
+      <ol class="log" id="log" aria-label="What ProcessReceipt returns"></ol>
     </div>
   </section>
 
   <section id="skills">
-    <h2>Навыки</h2>
+    <h2>Skills</h2>
     <div class="skills">
-      <div><h3>Roblox</h3><p>Typed Luau (<code>--!strict</code>), ModuleScripts, RemoteEvents, DataStore, ProfileStore, MarketplaceService, AnalyticsService, GUI из скриптов, Rojo, luau-lsp</p></div>
-      <div><h3>Другие движки</h3><p>Unity (C#), Godot, GDevelop</p></div>
-      <div><h3>AI-инструменты</h3><p>Claude Code, Gemini, Studio MCP: пишу ТЗ, ставлю задачи AI-агентам, проверяю их код и тестирую в Studio. Этот сайт сделан так же.</p></div>
-      <div><h3>Ещё</h3><p>Python, React, Firebase, Flutter, Git, GitHub Pages</p></div>
+      <div><h3>Roblox</h3><p>Typed Luau (<code>--!strict</code>), ModuleScripts, RemoteEvents, DataStore, ProfileStore, MarketplaceService, AnalyticsService, GUI built from scripts, Rojo, luau-lsp</p></div>
+      <div><h3>Other engines</h3><p>Unity (C#), Godot, GDevelop</p></div>
+      <div><h3>AI tools</h3><p>Claude Code, Gemini, Studio MCP: I write specs, assign tasks to AI agents, review their code and test in Studio. This site was built the same way.</p></div>
+      <div><h3>Also</h3><p>Python, React, Firebase, Flutter, Git, GitHub Pages</p></div>
     </div>
   </section>
 
   <section id="exp">
-    <h2>Опыт</h2>
+    <h2>Experience</h2>
     <div class="job">
-      <h3>Алгоритмика</h3>
-      <div class="when">Преподаватель и автор курсов · с 2024</div>
-      <p>Пишу и веду курсы по Roblox, Unity, Godot и Python для детей 9–14 лет. Каждый курс собираю сам: от идеи и сюжета до кода, презентаций и методичек.</p>
+      <h3>Algorithmics</h3>
+      <div class="when">Teacher and course author · since 2024</div>
+      <p>I write and teach Roblox, Unity, Godot and Python courses for kids aged 9–14. I build each course myself, from the idea and story to the code, slides and teacher guides.</p>
     </div>
     <div class="job">
-      <h3>Колледж СФ УУНиТ</h3>
-      <div class="when">Преподаватель · 2 года</div>
-      <p>Преподавал в колледже Стерлитамакского филиала Уфимского университета науки и технологий.</p>
+      <h3>College of the Sterlitamak Branch of UUST</h3>
+      <div class="when">Teacher · 2 years</div>
+      <p>Taught at the college of the Sterlitamak branch of Ufa University of Science and Technology.</p>
     </div>
 
-    <h2 class="sub">Образование</h2>
+    <h2 class="sub">Education</h2>
     <div class="job">
-      <h3>СФ УУНиТ</h3>
-      <div class="when">Бакалавр · Информационная безопасность · Диплом с отличием</div>
+      <h3>Sterlitamak Branch of Ufa University of Science and Technology</h3>
+      <div class="when">Bachelor's degree · Information Security · Graduated with honors</div>
     </div>
   </section>
 
   <footer id="contacts">
-    <h2>Контакты</h2>
+    <h2>Contacts</h2>
     <div class="btns">
       <a class="btn main" href="https://t.me/dj32j32j">Telegram</a>
       <a class="btn" href="mailto:ivan.denisov.dev@outlook.com">ivan.denisov.dev@outlook.com</a>
@@ -428,7 +429,7 @@ MarketplaceService.ProcessReceipt = processReceipt</code></pre>
 
 </div>
 <script>
-  // Клик по строке Explorer: подсветить её и прокрутить к разделу
+  // Click an Explorer row: highlight it and scroll to its section
   document.querySelectorAll('.tree button').forEach(function (btn) {
     btn.addEventListener('click', function () {
       document.querySelectorAll('.tree button').forEach(function (b) { b.classList.remove('on'); });
@@ -440,26 +441,26 @@ MarketplaceService.ProcessReceipt = processReceipt</code></pre>
   // Properties: show the hovered/focused Explorer item, like Studio
   var PROPS = {
     "Workspace": {
-      "Name": "Иван",
-      "Role": "Roblox-разработчик",
+      "Name": "Ivan",
+      "Role": "Roblox developer",
       "Language": "Typed Luau",
       "OpenToWork": true
     },
     "LastStation": {
       "ClassName": "Model",
-      "Status": "Опубликована",
-      "Genre": "Кооп-выживание",
+      "Status": "Published",
+      "Genre": "Co-op survival",
       "Playable": true
     },
     "RoundManager": {
       "ClassName": "ModuleScript",
-      "Pattern": "Машина состояний",
+      "Pattern": "State machine",
       "States": "3",
       "RunContext": "Server"
     },
     "GameConfig": {
       "ClassName": "ModuleScript",
-      "Role": "Все настройки игры",
+      "Role": "All game settings",
       "MagicNumbers": "0",
       "RunContext": "Shared"
     },
@@ -471,33 +472,33 @@ MarketplaceService.ProcessReceipt = processReceipt</code></pre>
     },
     "DreamFlight": {
       "ClassName": "Model",
-      "Status": "Опубликована",
-      "Genre": "Полёт, трассы из колец",
-      "Style": "Детский рисунок, комикс"
+      "Status": "Published",
+      "Genre": "Flight, ring courses",
+      "Style": "Crayon doodle, comic"
     },
     "TrackGenerator": {
       "ClassName": "ModuleScript",
-      "Input": "Этап и seed",
-      "Validated": "60/60 трасс",
+      "Input": "Stage and seed",
+      "Validated": "60/60 tracks",
       "RunContext": "Shared"
     },
     "SpikyPals": {
       "ClassName": "Model",
-      "Status": "В разработке",
-      "Genre": "Питомцы, симулятор жизни",
-      "Style": "Чёрные колючие чиби"
+      "Status": "In development",
+      "Genre": "Pet life sim",
+      "Style": "Black spiky chibis"
     },
     "FluffyBunker": {
       "ClassName": "Model",
-      "Status": "В разработке",
-      "Genre": "Строитель бункера",
-      "Dwellers": "Сурки, суслики, песцы"
+      "Status": "In development",
+      "Genre": "Bunker builder",
+      "Dwellers": "Marmots, gophers, foxes"
     },
     "Courses": {
       "ClassName": "Folder",
-      "Roblox": "36 уроков",
-      "Unity": "36 уроков",
-      "Ages": "9–14 лет"
+      "Roblox": "36 lessons",
+      "Unity": "36 lessons",
+      "Ages": "9–14"
     },
     "OtherProjects": {
       "ClassName": "Folder",
@@ -513,9 +514,9 @@ MarketplaceService.ProcessReceipt = processReceipt</code></pre>
     },
     "Experience": {
       "ClassName": "Folder",
-      "Current": "Алгоритмика",
-      "Before": "Колледж СФ УУНиТ",
-      "Degree": "Бакалавр ИБ, с отличием"
+      "Current": "Algorithmics",
+      "Before": "College of SB UUST",
+      "Degree": "BSc InfoSec, honors"
     },
     "Contacts": {
       "ClassName": "Script",
@@ -546,7 +547,7 @@ MarketplaceService.ProcessReceipt = processReceipt</code></pre>
   showProps('Workspace');
 
   // Output: print what RoundManager would log when the code scrolls into view
-  var LOG = [["ok", "Новый чек: батарея выдана, PurchaseId записан в профиль", "PurchaseGranted"], ["ok", "Тот же чек ещё раз: PurchaseId уже в профиле, второй раз не выдаём", "PurchaseGranted"], ["warn", "Матч не идёт: батарею выдать некуда", "NotProcessedYet, Roblox повторит"], ["warn", "Профиль игрока ещё не загружен", "NotProcessedYet"]];
+  var LOG = [["ok", "New receipt: battery granted, PurchaseId written to the profile", "PurchaseGranted"], ["ok", "Same receipt again: PurchaseId is already in the profile, not granted twice", "PurchaseGranted"], ["warn", "No match running: nowhere to put the battery", "NotProcessedYet, Roblox retries"], ["warn", "Player profile not loaded yet", "NotProcessedYet"]];
   var logEl = document.getElementById('log');
   function pad(n, w) { return String(n).padStart(w || 2, '0'); }
   function addLine(item) {
