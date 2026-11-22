@@ -90,7 +90,8 @@
     display: grid; place-items: center; color: var(--muted); text-align: center; padding: 16px;
   }
   .shot { position: relative; overflow: hidden; }
-  .shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .shot img, .shot video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .shot video { background: #111; }
   .lang { position: absolute; top: 16px; right: 24px; font-size: 15px; font-weight: 500; }
   .wrap { position: relative; }
   .status { color: var(--muted); margin: 0 0 14px; }
@@ -256,7 +257,7 @@
     </article>
 
     <article class="proj" id="bunker">
-      <div class="shot"><img src="img/bunker.gif" alt="Fluffy Bunker: dwellers carrying crates between rooms" loading="lazy" onerror="this.parentNode.remove()"></div>
+      <div class="shot"><video src="img/bunker.mp4" poster="img/bunker-poster.jpg" aria-label="Fluffy Bunker: dwellers carrying crates between rooms" autoplay muted loop playsinline preload="metadata" onerror="this.parentNode.remove()"></video></div>
       <div>
         <h3>Fluffy Bunker</h3>
         <p class="status">In development. A bunker in cross-section: rooms work as machines and animal dwellers carry crates between them like a living conveyor belt.</p>
@@ -436,6 +437,14 @@ MarketplaceService.ProcessReceipt = processReceipt</code></pre>
       btn.classList.add('on');
       document.getElementById(btn.dataset.go).scrollIntoView();
     });
+  });
+
+  document.querySelectorAll('.shot video').forEach(function (video) {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      video.autoplay = false;
+      video.controls = true;
+      video.pause();
+    }
   });
 
   // Properties: show the hovered/focused Explorer item, like Studio
